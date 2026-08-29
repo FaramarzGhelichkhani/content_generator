@@ -9,7 +9,6 @@ class ServiceType(models.Model):
         CREATE_REMOTE = "create_remote", "ساخت ریموت/سوییچ/کلید"
         COPY_REMOTE = "copy_remote", "کپی ریموت (یدک)"
         REPAIR_REMOTE = "repair_remote", "تعمیر ریموت"
-        CAR_UNLOCK = "car_unlock", "بازکردن درب خودرو"
         SELL_REMOTE = "sell_remote", "فروش ریموت"
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="services")
@@ -36,7 +35,6 @@ class TaxonomyNode(models.Model):
     class Kind(models.TextChoices):
         BRAND = "brand", "Brand"
         MODEL = "model", "Model"
-        CITY = "city", "City"
         EDUCATIONAL = "educational", "Educational"
         OTHER = "other", "Other"
 
@@ -78,11 +76,19 @@ class TaxonomyNode(models.Model):
     def get_poster_image(self):
         return self.images.filter(image_type=TaxonomyImage.ImageType.POSTER).first()
 
+    def get_card_image(self):
+            return self.images.filter(image_type=TaxonomyImage.ImageType.CARD).first()
+
+    def get_hero_image(self):
+            return self.images.filter(image_type=TaxonomyImage.ImageType.HERO).first()
+    
 class TaxonomyImage(models.Model):
     """مدل جدید برای مدیریت تصاویر چندگانه موجودیت‌ها"""
     class ImageType(models.TextChoices):
         PRODUCT = "product", "تصویر محصول (فروشگاهی)"
         POSTER = "poster", "پوستر (مقالات و کلاسترها)"
+        HERO = "hero", "تصویر هیرو صفحه این مدل"
+        CARD = "card", "تصویر کارت موتور در صفحه برند"
 
     taxonomy = models.ForeignKey(
         'TaxonomyNode', # فرض بر این است که مدل TaxonomyNode وجود دارد
@@ -119,3 +125,14 @@ class TaxonomyImage(models.Model):
         self.wp_attachment_id = None
         self.wp_image_url = None
         self.save()
+
+class Location(models.Model):
+    project = models.ForeignKey('core.Project', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, verbose_name="نام شهر/محله")
+    slug = models.SlugField(allow_unicode=True)
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.name
+    

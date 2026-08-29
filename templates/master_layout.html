@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    
+    <!-- ====== SEO TAGS ====== -->
+    <title>{{ page.seo_title|default:brief.keyword.text }}</title>
+    <meta name="description" content="{{ page.meta_description }}">
+    {% if brief.canonical_url %}
+    <link rel="canonical" href="{{ brief.canonical_url }}">
+    {% else %}
+    <link rel="canonical" href="https://remotecyclet.ir{{ brief.url_path }}">
+    {% endif %}
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="/assets/img/favicon_io/site.webmanifest">
+    
+    <!-- ====== BASE STYLES ====== -->
+    <style>
+        @layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;font-family:'Vazirmatn',sans-serif;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}
+        .dropdown-menu { display: none; position: absolute; top: 100%; right: 0; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 150px; padding: 10px 0; z-index: 100; }
+        .dropdown-wrapper:hover .dropdown-menu { display: flex; flex-direction: column; }
+    </style>
+
+    <!-- ====== STATIC FILES ====== -->
+    <link href="/assets/css/vazirmatn.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/style.css" rel="stylesheet">
+    
+    <!-- ====== SCHEMA.ORG ====== -->
+    {% if page.schema_json %}
+    <script type="application/ld+json">
+        {{ page.schema_json|safe }}
+    </script>
+    {% endif %}
+</head>
+<body class="bg-background font-body-md text-on-background">
+
+    <!-- ====== HEADER SECTION ====== -->
+    {% if is_export %}
+        <!-- دستور SSI برای سرور نهایی سایت اصلی (Nginx/Apache) -->
+        <!--#include virtual="/includes/header.html" -->
+    {% else %}
+        <!-- رندر زنده هدر برای پیش‌نمایش در پنل ادمین ماشین تولید محتوا -->
+        {% include 'includes/header.html' %}
+    {% endif %}
+
+    <!-- ====== MAIN CONTENT ====== -->
+    <main class="w-full pt-20">
+        <!-- تزریق محتوای کامپایل شده (بدنه صفحه) که از دیتابیس خوانده می‌شود -->
+        {{ page.compiled_body|safe }}
+    </main>
+
+    <!-- ====== FOOTER SECTION ====== -->
+    {% if is_export %}
+        <!-- دستور SSI برای سرور نهایی سایت اصلی -->
+        <!--#include virtual="/includes/footer.html" -->
+    {% else %}
+        <!-- رندر زنده فوتر برای پیش‌نمایش در پنل ادمین ماشین تولید محتوا -->
+        {% include 'includes/footer.html' %}
+    {% endif %}
+
+</body>
+</html>

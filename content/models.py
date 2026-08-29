@@ -27,15 +27,6 @@ class Keyword(models.Model):
         help_text="اگر این کلاستر است، پیلار والد آن را انتخاب کنید."
     )
 
-    # منطق معنایی اینجا می‌ماند
-    service = models.ForeignKey(
-        ServiceType,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="keywords",
-        verbose_name="نوع خدمت",
-    )
     intent = models.ForeignKey(
         IntentType,
         on_delete=models.SET_NULL,
@@ -65,7 +56,7 @@ class Keyword(models.Model):
     class Meta:
         unique_together = ("project", "text")
         indexes = [
-            models.Index(fields=["project", "service", "intent"]),
+            models.Index(fields=["project", "intent"]),
             models.Index(fields=["project", "status"]),
             models.Index(fields=["project", "normalized_text"]),
         ]
@@ -105,14 +96,20 @@ class PageBrief(models.Model):
         verbose_name="کلیدواژه مبنا",
     )
 
-    # برای صفحات لایه 1/2/3؛ لایه 0 می‌تواند null باشد یا city داشته باشد
+    service_type = models.ForeignKey(
+        'taxonomy.ServiceType', 
+        on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name="نوع سرویس (پیلار اصلی)"
+    )
     entity = models.ForeignKey(
-        TaxonomyNode,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="page_briefs",
-        verbose_name="موجودیت",
+        'taxonomy.TaxonomyNode',
+        on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name="موجودیت (برند/مدل)"
+    )
+    location = models.ForeignKey(
+        'taxonomy.Location',  
+        on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name="شهر/مکان"
     )
 
     parent_page = models.ForeignKey(
@@ -145,10 +142,10 @@ class PageBrief(models.Model):
         unique_together = ("project", "url_path")
         constraints = [
             models.UniqueConstraint(
-                fields=["project", "entity", "keyword", "page_level"],
-                name="uniq_entity_pagebrief_per_entity_level",
+                fields=["project", "service_type", "entity", "location", "page_level"],
+                name="uniq_page_permutation",
             ),
-        ]    
+        ]   
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -227,6 +224,10 @@ class PageContent(models.Model):
 
     generated_by = models.CharField(max_length=100, blank=True, help_text="مدل استفاده شده (مثلا gpt-4o یا claude-3)")
     generation_error = models.TextField(blank=True)
+    agent_logs = models.JSONField(
+        default=list, blank=True, 
+        help_text="تاریخچه بازخوردها و خطاهای ایجنت‌ها در چرخه‌های iteration"
+    )
     
     generated_at = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -1,0 +1,380 @@
+<div class="flex flex-col w-full rtl bg-background relative">
+    
+    <!-- ================= 1. HERO SECTION (پس‌زمینه پوستر) ================= -->
+    {% for block in blocks %}
+        {% if block.type == 'hero' %}
+        <div class="relative w-full flex flex-col items-center">
+            
+            <!-- تصویر هیرو (پوستر) + تگ H1 (بدون بردکرامب) -->
+            <section class="relative w-full min-h-[450px] md:min-h-[550px] flex flex-col justify-center items-center -mt-20 pt-20 pb-24 md:pb-32 overflow-hidden">
+                {% with poster=brief.entity.get_card_image %}
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{% if poster and poster.wp_image_url %}{{ poster.wp_image_url }}{% elif poster and poster.image %}{{ poster.image.url }}{% else %}{{ block.image_url|default:'/assets/img/model-hero.jpg' }}{% endif %}');"></div>
+                {% endwith %}
+                <div class="absolute inset-0 bg-gradient-to-b from-surface-variant/95 via-surface-variant/60 to-surface-variant/95 mix-blend-multiply"></div>
+                <div class="relative z-10 w-full max-w-[1280px] px-4 md:px-8 mx-auto flex flex-col items-center text-center gap-6">
+                    <h1 class="font-headline-xl text-3xl md:text-5xl lg:text-6xl text-white font-black leading-tight drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)] px-4">
+                        {{ block.title|default:page.h1 }}
+                    </h1>
+                </div>
+            </section>
+
+            <!-- ⭐️ باکس محصول (تطبیق‌پذیر و هوشمند) ⭐️ -->
+            <div class="relative z-20 w-full max-w-[1100px] mx-auto px-4 md:px-8 -mt-16 md:-mt-24 mb-8">
+                <div class="bg-surface-container-lowest rounded-[24px] md:rounded-[32px] shadow-2xl shadow-surface-variant/20 border border-outline-variant/40 p-6 md:p-10 flex flex-col gap-8 md:gap-10">
+                    
+                    <!-- استفاده از flex بجای grid برای انعطاف‌پذیری کامل -->
+                    <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center justify-center">
+                        
+                        <!-- ستون تصویر محصول (همیشه رندر می‌شود) -->
+                        <div class="flex-1 w-full max-w-lg flex justify-center items-center bg-surface-container-low/50 rounded-3xl p-6 md:p-8 border border-outline-variant/30 shadow-inner relative group mx-auto">
+                            {% with product=brief.entity.get_product_image %}
+                            <img src="{% if product and product.wp_image_url %}{{ product.wp_image_url }}{% elif product and product.image %}{{ product.image.url }}{% else %}/assets/img/default-remote.png{% endif %}"
+                             alt="تصویر ریموت {{ brief.name }}" class="w-full max-w-[300px] h-auto max-h-[350px] object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.15)] group-hover:scale-105 transition-transform duration-500">
+                            {% endwith %}
+                        </div>
+
+                        <!-- ستون مشخصات (فقط اگر AI آن را ساخته باشد رندر می‌شود) -->
+                        {% for specs_block in blocks %}
+                            <!-- شرط specs_block.data بررسی میکند که AI جیسون خالی {} نداده باشد -->
+                            {% if specs_block.type == 'specs' and specs_block.is_json and specs_block.data %}
+                            <div class="flex-1 w-full flex flex-col gap-4">
+                                
+                                <!-- عنوان مشخصات به داخل شرط منتقل شد تا در صورت نبود دیتا مخفی شود -->
+                                <div class="flex items-center gap-3 mb-2 border-b border-outline-variant/30 pb-4">
+                                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                        <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M15 9H9v6h6V9zm-2 4h-2v-2h2v2zm8-2V9h-2V7c0-1.1-.9-2-2-2h-2V3h-2v2h-2V3H9v2H7c-1.1 0-2 .9-2 2v2H3v2h2v2H3v2h2v2c0 1.1.9 2 2 2h2v2h2v-2h2v2h2v-2h2c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2zm-4 6H7V7h10v10z"/></svg>
+                                    </div>
+                                    <h2 class="font-headline-lg text-xl md:text-2xl text-on-surface font-black">مشخصات اصلی ریموت</h2>
+                                </div>
+                                
+                                <div class="flex flex-col gap-1">
+                                    {% for label, value in specs_block.data.items %}
+                                    <div class="flex justify-between items-center py-3 border-b border-outline-variant/20 last:border-0 hover:bg-surface-container-lowest transition-colors px-2 rounded-lg">
+                                        <span class="font-label-md text-sm md:text-base text-on-surface-variant w-1/3">{{ label }}</span>
+                                        <span class="font-body-md text-sm md:text-base text-on-surface font-black dir-ltr text-left w-2/3">{{ value }}</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+
+                    </div>
+
+                    <!-- دکمه‌های خرید و مشاوره (سطر پایین همیشه زیر محتوا قرار می‌گیرد) -->
+                    <div class="pt-6 md:pt-8 border-t border-outline-variant/40 flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
+                        <a href="tel:09204407640" class="group relative flex items-center justify-center gap-2 bg-primary text-white px-8 py-3.5 md:py-4 rounded-xl font-bold text-base md:text-lg shadow-[0_4px_15px_rgba(0,105,112,0.3)] hover:shadow-[0_8px_25px_rgba(0,105,112,0.5)] hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto overflow-hidden">
+                            <div class="absolute inset-0 w-full h-full bg-white/30 translate-x-[-150%] skew-x-[-15deg] group-hover:animate-shine"></div>
+                            <svg class="text-[22px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.22C21 6.73 16.74 3 12 3c-4.69 0-9 3.65-9 9.28-.6.34-1 .98-1 1.72v2c0 1.1.9 2 2 2h1v-6.1c0-3.87 3.13-7 7-7s7 3.13 7 7V19h-8v2h8c1.1 0 2-.9 2-2v-1.22c.59-.31 1-.92 1-1.64v-2.3c0-.7-.41-1.31-1-1.62z"/><path d="M9 13c0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3-3 1.34-3 3z"/></svg>
+                            <span>مشاوره تخصصی و استعلام</span>
+                        </a>
+                        <a href="/#consultation-form" class="flex items-center justify-center gap-2 bg-surface text-primary border-2 border-primary/20 px-8 py-3.5 md:py-4 rounded-xl font-bold text-base md:text-lg hover:border-primary hover:bg-primary/5 hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto shadow-sm">
+                            <svg class="text-[20px] md:text-[24px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                            <span>ثبت سفارش خرید</span>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+            
+        </div>
+        {% endif %}
+    {% endfor %}
+
+
+    <!-- ================= 2. MAIN CONTENT (گرید دو ستونه: فهرست مطالب + آکاردئون‌ها/مقالات) ================= -->
+    <div class="w-full max-w-[1280px] mx-auto px-4 md:px-8 py-8 md:py-12 block lg:flex lg:flex-row items-start lg:gap-12 relative">
+        
+        <!-- ⭐️ SIDEBAR: فهرست مطالب چسبان (Sticky TOC) ⭐️ -->
+        <aside class="w-full lg:w-[280px] shrink-0 sticky top-[80px] lg:top-28 z-[45] lg:bg-surface-container-lowest/80 lg:backdrop-blur-md lg:border border-outline-variant/50 lg:rounded-[20px] lg:p-5 lg:shadow-sm mb-10 lg:mb-0">
+            
+            <button class="w-full flex lg:hidden items-center justify-between bg-surface-container-lowest/95 backdrop-blur-xl border border-outline-variant/60 rounded-xl p-4 shadow-lg" onclick="toggleMobileToc()">
+                <span class="font-headline-md text-base font-black text-on-surface flex items-center gap-2">
+                    <svg class="text-primary text-[22px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v2H7zm0-4h2v2H7zm0 8h2v2H7zm4-8h6v2h-6zm0 4h6v2h-6zm0 4h6v2h-6z"/></svg>
+                    فهرست مطالب
+                </span>
+                <svg id="mobile-toc-icon" class="text-on-surface-variant transition-transform duration-300 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+            </button>
+
+            <h3 class="hidden lg:flex font-headline-md text-lg font-black text-on-surface mb-4 items-center gap-2">
+                <svg class="text-primary text-[24px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M4 10h12v2H4zm0-4h16v2H4zm0 8h8v2H4zm10 0v6l5-3z"/></svg>
+                فهرست مطالب
+            </h3>
+
+            <div id="toc-menu" class="hidden lg:block absolute lg:relative top-[calc(100%+8px)] lg:top-auto right-0 w-full lg:w-auto bg-surface-container-lowest lg:bg-transparent border border-outline-variant/40 lg:border-none rounded-2xl lg:rounded-none p-4 lg:p-0 shadow-xl lg:shadow-none z-50">
+                <ul class="flex flex-col relative pr-2 gap-1">
+                    <div class="absolute right-[1px] top-2 bottom-2 w-[2px] bg-outline-variant/30 rounded-full"></div>
+                    
+                    {% for block in blocks %}
+                        <!-- اسکیپ کردن image و specs چون در بالا رندر شدند -->
+                        {% if block.type != 'image' and block.type != 'specs' %}
+                            <!-- برای هیرو، فقط در صورتی نشان میدهیم که محتوای متنی داشته باشد -->
+                            {% if block.type != 'hero' or block.content %}
+                            <li class="relative pl-2 py-3 lg:py-2 border-b border-outline-variant/20 last:border-0">
+                                <div class="absolute -right-[4px] top-[18px] lg:top-[14px] w-2 h-2 rounded-full bg-surface-container-highest border border-surface-container-lowest transition-colors group-hover:bg-primary"></div>
+                                
+                                <a href="#section-{{ forloop.counter }}" onclick="closeMobileToc()" class="font-body-md text-[14px] md:text-[15px] text-on-surface-variant hover:text-primary transition-colors block pr-4 group font-bold leading-relaxed">
+                                    {% if block.type == 'hero' %} {{ block.title|default:'معرفی و بررسی محصول' }}
+                                    {% elif block.type == 'table' %} {{ block.title|default:'جدول اطلاعات تکمیلی' }}
+                                    {% elif block.type == 'faq' %} {{ block.title|default:'سوالات متداول' }}
+                                    {% elif block.type == 'step_by_step' %} {{ block.title|default:'مراحل ساخت ریموت' }}
+                                    {% elif block.type == 'scenarios' %} {{ block.title|default:'سناریوهای مختلف' }}
+                                    {% elif block.type == 'conclusion' %} {{ block.title|default:'جمع‌بندی' }}
+                                    {% else %} {{ block.title|default:'توضیحات تکمیلی' }}
+                                    {% endif %}
+                                </a>
+                            </li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+
+        <!-- ⭐️ CONTENT BLOCKS ⭐️ -->
+        <main class="w-full lg:w-[calc(100%-300px)] block">
+            {% for block in blocks %}
+                
+                <!-- اسکیپ کردن image و specs -->
+                {% if block.type != 'image' and block.type != 'specs' %}
+                    {% if block.type != 'hero' or block.content %}
+                    <section id="section-{{ forloop.counter }}" class="w-full scroll-mt-32 mb-16 md:mb-24 last:mb-0">
+
+                        <!-- ================= SCENARIOS BLOCK ================= -->
+                        {% if block.type == 'scenarios' and block.is_json %}
+                        <div class="flex items-center gap-3 mb-6 md:mb-8">
+                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary"><svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div>
+                            <h2 class="font-headline-lg text-xl md:text-3xl text-on-surface font-black">{{ block.title|default:'سناریوهای مختلف خدمات' }}</h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {% for scenario in block.data %}
+                            <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl p-6 shadow-sm hover:border-primary/30 hover:shadow-md transition-all">
+                                <h4 class="font-headline-md text-lg font-black mb-2 {% if scenario.is_critical %}text-error{% else %}text-primary{% endif %}">
+                                    {{ scenario.title }}
+                                </h4>
+                                <p class="font-body-md text-base text-on-surface-variant leading-relaxed">{{ scenario.desc }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- ================= STEP BY STEP ================= -->
+                        {% elif block.type == 'step_by_step' and block.is_json %}
+                        <div class="bg-surface-container-low rounded-3xl p-6 md:p-10 shadow-md relative overflow-hidden">
+                            <div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+                            <h3 class="font-headline-lg text-xl md:text-3xl font-black text-on-surface mb-8 relative z-10">{{ block.title|default:'مراحل تخصصی انجام کار' }}</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                                {% for step in block.data %}
+                                <div class="flex flex-col gap-3">
+                                    <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-black text-xl shadow-lg shadow-primary/30">{{ forloop.counter }}</div>
+                                    <h4 class="font-headline-md text-lg font-bold text-on-surface mt-2">{{ step.title }}</h4>
+                                    <p class="font-body-sm text-base text-on-surface-variant leading-relaxed">{{ step.desc }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- ================= TABLE BLOCK ================= -->
+                        {% elif block.type == 'table' %}
+                        <div class="flex items-center gap-3 mb-6 md:mb-8">
+                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary"><svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H5V5h15zm-5 14h-5v-9h5v9zM5 10h3v9H5v-9zm12 9v-9h3v9h-3z"/></svg></div>
+                            <h2 class="font-headline-lg text-xl md:text-3xl text-on-surface font-black">{{ block.title|default:'جدول اطلاعات تکمیلی' }}</h2>
+                        </div>
+                        <div class="overflow-x-auto bg-surface-container-lowest border border-outline-variant/40 rounded-[24px] p-4 md:p-6 shadow-sm content-body">
+                            {% if block.content %}{{ block.content|safe }}{% endif %}
+                        </div>
+
+                        <!-- ================= FAQ BLOCK ================= -->
+                        {% elif block.type == 'faq' and block.is_json %}
+                        <div class="flex flex-col gap-2 mb-6 md:mb-8">
+                            <h2 class="font-headline-lg text-xl md:text-3xl font-black text-on-surface flex items-center gap-3">
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary"><svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></div>
+                                {{ block.title|default:'سوالات متداول' }}
+                            </h2>
+                        </div>
+                        <div class="flex flex-col gap-3 md:gap-4">
+                            {% for item in block.data %}
+                            <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-primary/30 transition-all">
+                                <button class="w-full flex items-center justify-between p-5 md:p-6 bg-transparent transition-colors group" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-180')">
+                                    <span class="font-label-md text-base md:text-lg text-on-surface text-right font-black group-hover:text-primary transition-colors leading-relaxed pr-2">{{ item.question }}</span>
+                                    <svg class="arrow-icon text-[24px] md:text-[28px] text-on-surface-variant transition-transform duration-300 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                                </button>
+                                <div class="hidden p-5 md:p-6 pt-0 bg-surface-container-lowest">
+                                    <div class="pt-4 border-t border-outline-variant/30">
+                                        <p class="font-body-md text-base md:text-lg text-on-surface-variant leading-loose">{{ item.answer|linebreaksbr }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- ================= GENERIC/HERO/CONCLUSION TEXT (Truncation) ================= -->
+                        {% else %}
+                        <div class="flex items-center gap-3 mb-6 md:mb-8">
+                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                {% if block.type == 'conclusion' %}
+                                    <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M22 5.18L10.59 16.6l-4.24-4.24 1.41-1.41 2.83 2.83 10-10L22 5.18zM12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8c1.57 0 3.04.46 4.28 1.25l1.45-1.45A9.969 9.969 0 0012 2C6.48 2 2 6.48 2 12s4.48 10 10 10c2.25 0 4.33-.74 6-2l-1.46-1.46c-1.26.93-2.82 1.46-4.54 1.46z"/></svg>
+                                {% else %}
+                                    <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                                {% endif %}
+                            </div>
+                            <h2 class="font-headline-lg text-xl md:text-3xl text-on-surface font-black">
+                                {% if block.type == 'hero' %} {{ block.title|default:'معرفی و بررسی محصول' }}
+                                {% elif block.type == 'conclusion' %} {{ block.title|default:'جمع‌بندی' }}
+                                {% else %} {{ block.title|default:'توضیحات و اطلاعات تکمیلی' }}
+                                {% endif %}
+                            </h2>
+                        </div>
+                        
+                        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-[24px] p-6 md:p-8 shadow-sm relative">
+                            <div id="long-text-wrapper-{{ forloop.counter }}" class="relative text-truncate-wrapper">
+                                <div class="content-body hide-first-title font-body-md text-base md:text-lg text-on-surface-variant leading-loose text-justify pb-2 lg:pb-0">
+                                    {{ block.content|safe }}
+                                </div>
+                                <!-- گرادیانت محوشونده (موبایل) -->
+                                <div id="long-text-fade-{{ forloop.counter }}" class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-surface-container-lowest to-transparent pointer-events-none fade-overlay"></div>
+                            </div>
+
+                            <!-- دکمه نمایش بیشتر (فقط موبایل) -->
+                            <div class="w-full flex justify-center mt-6 relative z-10 lg:hidden">
+                                <button onclick="toggleTextExpansion('{{ forloop.counter }}')" class="group flex items-center justify-center gap-2 bg-primary/10 text-primary border-2 border-primary/20 hover:bg-primary hover:text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 w-full">
+                                    <span id="long-text-btn-{{ forloop.counter }}">مطالعه کامل مطلب</span>
+                                    <svg id="long-text-icon-{{ forloop.counter }}" class="transition-transform duration-300 w-[1.5em] h-[1.5em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </section>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </main>
+    </div>
+
+    <!-- ================= 3. RELATED BRANDS ================= -->
+    <section class="w-full mt-8 md:mt-16 pt-16 md:pt-24 pb-16 md:pb-24 bg-surface-container-low border-t border-outline-variant/30">
+        <div class="w-full max-w-[1280px] mx-auto px-4 md:px-8 flex flex-col gap-10 md:gap-14">
+            <div class="text-center">
+                <h2 class="font-headline-xl text-2xl md:text-4xl text-on-surface font-black mb-4">خدمات تخصصی مرتبط</h2>
+                <p class="font-body-lg text-on-surface-variant">برخی دیگر از خدمات سیستم‌های ایموبلایزر هوشمند</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10">
+                <div class="flex flex-col items-center bg-surface-container-lowest rounded-3xl p-5 shadow-sm border border-outline-variant/40 hover:shadow-xl transition-all group">
+                    <div class="w-full h-48 md:h-60 rounded-2xl overflow-hidden relative shadow-inner bg-surface">
+                        <img src="/assets/img/honda-service.jpg" alt="خدمات هوندا" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="flex flex-col items-center gap-3 w-full text-center mt-5 py-2">
+                        <h4 class="font-headline-md text-xl md:text-2xl font-black text-on-surface group-hover:text-primary transition-colors">سری Honda Click & ADV</h4>
+                        <ul class="flex flex-col items-center gap-2 mt-2">
+                            <li class="flex items-center gap-2">
+                                <svg class="text-primary text-[20px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                <span class="font-body-md text-sm md:text-base text-on-surface-variant">بازگشایی قفل در صورت مفقودی</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="text-primary text-[20px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                <span class="font-body-md text-sm md:text-base text-on-surface-variant">تغییر کد ID سیستم کیلس</span>
+                            </li>
+                        </ul>
+                        <a href="/brand/honda" class="mt-4 w-full sm:w-fit bg-primary/10 text-primary font-bold px-8 py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-colors">مشاهده برند <svg class="text-[18px] rtl:rotate-180 w-[1.2em] h-[1.2em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></a>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center bg-surface-container-lowest rounded-3xl p-5 shadow-sm border border-outline-variant/40 hover:shadow-xl transition-all group">
+                    <div class="w-full h-48 md:h-60 rounded-2xl overflow-hidden relative shadow-inner bg-surface">
+                        <img src="/assets/img/yamaha-service.jpg" alt="خدمات یاماها" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="flex flex-col items-center gap-3 w-full text-center mt-5 py-2">
+                        <h4 class="font-headline-md text-xl md:text-2xl font-black text-on-surface group-hover:text-primary transition-colors">سری Yamaha Aerox & NMAX</h4>
+                        <ul class="flex flex-col items-center gap-2 mt-2">
+                            <li class="flex items-center gap-2">
+                                <svg class="text-primary text-[20px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                <span class="font-body-md text-sm md:text-base text-on-surface-variant">خواندن کد پین از روی برد</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="text-primary text-[20px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                <span class="font-body-md text-sm md:text-base text-on-surface-variant">برنامه‌ریزی مجدد کنترل یونیت</span>
+                            </li>
+                        </ul>
+                        <a href="/brand/yamaha" class="mt-4 w-full sm:w-fit bg-primary/10 text-primary font-bold px-8 py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-primary hover:text-white transition-colors">مشاهده برند <svg class="text-[18px] rtl:rotate-180 w-[1.2em] h-[1.2em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- ====== اسکریپت‌ها ====== -->
+<script>
+    function toggleTextExpansion(id) {
+        const wrapper = document.getElementById(`long-text-wrapper-${id}`);
+        const fade = document.getElementById(`long-text-fade-${id}`);
+        const btnText = document.getElementById(`long-text-btn-${id}`);
+        const btnIcon = document.getElementById(`long-text-icon-${id}`);
+
+        if (wrapper.classList.contains('is-expanded')) {
+            wrapper.classList.remove('is-expanded');
+            fade.classList.remove('is-hidden');
+            btnText.innerText = 'مطالعه کامل مطلب';
+            btnIcon.classList.remove('rotate-180');
+            document.getElementById(`section-${id}`).scrollIntoView({ behavior: 'smooth' });
+        } else {
+            wrapper.classList.add('is-expanded');
+            fade.classList.add('is-hidden');
+            btnText.innerText = 'بستن توضیحات';
+            btnIcon.classList.add('rotate-180');
+        }
+    }
+
+    function toggleMobileToc() {
+        document.getElementById('toc-menu').classList.toggle('hidden');
+        document.getElementById('mobile-toc-icon').classList.toggle('rotate-180');
+    }
+
+    function closeMobileToc() {
+        if (window.innerWidth < 1024) { 
+            document.getElementById('toc-menu').classList.add('hidden');
+            document.getElementById('mobile-toc-icon').classList.remove('rotate-180');
+        }
+    }
+</script>
+
+<!-- ====== استایل‌های اختصاصی و انیمیشن‌ها ====== -->
+<style>
+    main > section { margin-top: 3.5rem !important; border-top: 1px solid transparent; }
+    @media (min-width: 768px) { main > section { margin-top: 5.5rem !important; } }
+    main > section:first-child { margin-top: 0 !important; }
+
+    @media (max-width: 1023px) {
+        .text-truncate-wrapper { max-height: 180px; overflow: hidden; transition: max-height 0.8s ease-in-out; }
+        .text-truncate-wrapper.is-expanded { max-height: 8000px; }
+        .fade-overlay { opacity: 1; transition: opacity 0.4s ease; }
+        .fade-overlay.is-hidden { opacity: 0; }
+    }
+    @media (min-width: 1024px) {
+        .text-truncate-wrapper { max-height: none !important; overflow: visible !important; }
+        .fade-overlay { display: none !important; }
+    }
+
+    html { scroll-behavior: smooth; }
+
+    @keyframes shine { 0% { transform: translateX(-150%) skewX(-15deg); } 100% { transform: translateX(150%) skewX(-15deg); } }
+    .animate-shine { animation: shine 1.2s ease-in-out infinite; }
+
+    .hide-first-title h2:first-child, .hide-first-title h3:first-child, .hide-first-title > div > h2:first-child, .hide-first-title > div > h3:first-child { display: none !important; }
+
+    .content-body h2 { font-size: 1.5rem; font-weight: 900; color: #006970; margin-top: 2rem; margin-bottom: 1rem; line-height: 1.5; }
+    @media (min-width: 768px) { .content-body h2 { font-size: 2rem; margin-top: 2.5rem; } }
+    .content-body h3 { font-size: 1.35rem; font-weight: 800; color: #191c1e; margin-top: 1.75rem; margin-bottom: 1rem; line-height: 1.5; }
+    @media (min-width: 768px) { .content-body h3 { font-size: 1.5rem; margin-top: 2rem; margin-bottom: 1.25rem;} }
+    .content-body p { margin-bottom: 1.25rem; line-height: 2.2; }
+    .content-body strong, .content-body b { color: #000000; font-weight: 900; }
+    .content-body a { color: #006970; font-weight: bold; text-decoration: none; border-bottom: 2px solid #006970; padding-bottom: 2px; transition: all 0.3s ease; }
+    .content-body a:hover { background-color: #006970; color: #ffffff; }
+    .content-body ul { list-style-type: disc; margin-right: 1.5rem; margin-bottom: 1.5rem; }
+    .content-body li { margin-bottom: 0.75rem; line-height: 2; }
+    .content-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    .content-body th, .content-body td { border: 1px solid #e2e8f0; padding: 0.75rem; text-align: right; }
+    .content-body th { background-color: #f1f5f9; font-weight: bold; }
+</style>

@@ -1,0 +1,491 @@
+<div class="flex flex-col w-full rtl bg-background">
+    
+    <!-- ================= HERO & INTRO IMAGES ================= -->
+    {% for block in blocks %}
+        
+        <!-- ================= HERO SECTION ================= -->
+        {% if block.type == 'hero' %}
+        
+        <div class="relative w-full flex flex-col items-center">
+            
+            <!-- بخش تصویر هیرو (فقط H1) -->
+            <section class="relative w-full min-h-[400px] md:min-h-[500px] flex flex-col justify-center -mt-20 pt-32 pb-24 overflow-hidden">
+                {% with hero=brief.entity.get_hero_image %}
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{% if hero and hero.wp_image_url %}{{ hero.wp_image_url }}{% elif hero and hero.image %}{{ hero.image.url }}{% else %}{{ block.image_url|default:'/assets/img/brand-hero.jpg' }}{% endif %}');"></div>
+                {% endwith %}
+                <div class="absolute inset-0 bg-gradient-to-b from-surface-variant/95 via-surface-variant/70 to-surface-variant/95 mix-blend-multiply"></div>
+                
+                <div class="relative z-10 w-full max-w-[1280px] px-4 md:px-8 mx-auto flex flex-col items-center justify-center text-center">
+                    <h1 class="font-headline-xl text-3xl md:text-5xl lg:text-6xl text-white font-black drop-shadow-2xl leading-tight px-4">
+                        {{ block.title|default:page.h1 }}
+                    </h1>
+                </div>
+            </section>
+
+            <!-- کارت‌های تصویری مدل‌های موتور (بیرون‌زده از هیرو) -->
+            {% if brand_models %}
+            <div class="relative z-20 w-full px-4 md:px-8 mx-auto -mt-24 md:-mt-32 mb-8 flex justify-center drop-shadow-2xl">
+                
+                {% if brand_models|length >= 6 %}
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5 w-full max-w-[1000px]">
+                        {% for model in brand_models|slice:":6" %}
+                            {% with card_image=model.get_card_image %}
+                            <a href="{{ brief.url_path }}{{ model.slug }}" class="relative overflow-hidden bg-surface-container-lowest rounded-2xl md:rounded-3xl aspect-[4/3] md:aspect-video shadow-lg border border-white/10 hover:border-primary/50 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(0,105,112,0.2)] transition-all duration-300 cursor-pointer group flex flex-col justify-end">
+                                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" 
+                                     style="background-image: url('{% if card_image %}{% if card_image.wp_image_url %}{{ card_image.wp_image_url }}{% elif card_image.image %}{{ card_image.image.url }}{% endif %}{% else %}/assets/img/default-motor.jpg{% endif %}');">
+                                </div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent transition-opacity duration-300 group-hover:opacity-90"></div>
+                                <div class="relative z-10 p-4 md:p-5 flex flex-col items-start gap-1 w-full">
+                                    <span class="font-headline-md text-base md:text-xl text-white font-black group-hover:text-primary transition-colors line-clamp-1">{{ model.name }}</span>
+                                </div>
+                            </a>
+                            {% endwith %}
+                        {% endfor %}
+                    </div>
+
+                {% elif brand_models|length >= 4 %}
+                    <div class="grid grid-cols-2 gap-3 md:gap-5 w-full max-w-[700px]">
+                        {% for model in brand_models|slice:":4" %}
+                            {% with poster=model.get_card_image %}
+                            <a href="{{ brief.url_path }}{{ model.slug }}" class="relative overflow-hidden bg-surface-container-lowest rounded-2xl md:rounded-3xl aspect-[4/3] shadow-lg border border-white/10 hover:border-primary/50 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(0,105,112,0.2)] transition-all duration-300 cursor-pointer group flex flex-col justify-end">
+                                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image: url('{% if poster %}{% if poster.wp_image_url %}{{ poster.wp_image_url }}{% elif poster.image %}{{ poster.image.url }}{% endif %}{% else %}/assets/img/default-motor.jpg{% endif %}');"></div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent transition-opacity duration-300 group-hover:opacity-90"></div>
+                                <div class="relative z-10 p-4 md:p-5 flex flex-col items-start gap-1 w-full">
+                                    <span class="font-headline-md text-base md:text-xl text-white font-black group-hover:text-primary transition-colors line-clamp-2">{{ model.name }}</span>
+                                </div>
+                            </a>
+                            {% endwith %}
+                        {% endfor %}
+                    </div>
+
+                {% elif brand_models|length >= 2 %}
+                    <div class="grid grid-cols-2 gap-3 md:gap-5 w-full max-w-[600px]">
+                        {% for model in brand_models|slice:":2" %}
+                            {% with poster=model.get_card_image %}
+                            <a href="{{ brief.url_path }}{{ model.slug }}" class="relative overflow-hidden bg-surface-container-lowest rounded-2xl md:rounded-3xl aspect-[4/3] shadow-lg border border-white/10 hover:border-primary/50 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(0,105,112,0.2)] transition-all duration-300 cursor-pointer group flex flex-col justify-end">
+                                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image: url('{% if poster %}{% if poster.wp_image_url %}{{ poster.wp_image_url }}{% elif poster.image %}{{ poster.image.url }}{% endif %}{% else %}/assets/img/default-motor.jpg{% endif %}');"></div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent transition-opacity duration-300 group-hover:opacity-90"></div>
+                                <div class="relative z-10 p-4 md:p-5 flex flex-col items-start gap-1 w-full">
+                                    <span class="font-headline-md text-base md:text-xl text-white font-black group-hover:text-primary transition-colors line-clamp-1">{{ model.name }}</span>
+                                </div>
+                            </a>
+                            {% endwith %}
+                        {% endfor %}
+                    </div>
+
+                {% elif brand_models|length == 1 %}
+                    <div class="grid grid-cols-1 w-full max-w-[350px]">
+                        {% for model in brand_models|slice:":1" %}
+                            {% with poster=model.get_card_image %}
+                            <a href="{{ brief.url_path }}{{ model.slug }}" class="relative overflow-hidden bg-surface-container-lowest rounded-2xl md:rounded-3xl aspect-video shadow-lg border border-white/10 hover:border-primary/50 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(0,105,112,0.2)] transition-all duration-300 cursor-pointer group flex flex-col justify-end">
+                                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style="background-image: url('{% if poster %}{% if poster.wp_image_url %}{{ poster.wp_image_url }}{% elif poster.image %}{{ poster.image.url }}{% endif %}{% else %}/assets/img/default-motor.jpg{% endif %}');"></div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent transition-opacity duration-300 group-hover:opacity-90"></div>
+                                <div class="relative z-10 p-4 md:p-5 flex flex-col items-start gap-1 w-full">
+                                    <span class="font-headline-md text-base md:text-xl text-white font-black group-hover:text-primary transition-colors line-clamp-1">{{ model.name }}</span>
+                                </div>
+                            </a>
+                            {% endwith %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+            </div>
+            {% endif %}
+            
+            <!-- کارت متنی هیرو + نوار اعتماد -->
+            {% if block.content %}
+            <div class="w-full max-w-[1000px] mx-auto px-4 md:px-8 relative z-20 mb-8 mt-2 md:mt-4">
+                <div class="bg-surface-container-lowest rounded-[24px] md:rounded-[32px] shadow-2xl shadow-surface-variant/20 border border-outline-variant/40 p-5 md:p-10 flex flex-col items-center text-center">
+                    
+                    <div class="font-body-lg text-base md:text-lg lg:text-xl text-on-surface-variant font-bold leading-loose text-justify content-body w-full">
+                        {{ block.content|safe }}
+                    </div>
+                    
+                    <div class="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 w-full">
+                        <a href="tel:09204407640" class="group relative flex items-center justify-center gap-2 bg-primary text-white px-6 md:px-8 py-3.5 md:py-4 rounded-xl font-bold text-base md:text-lg shadow-[0_4px_15px_rgba(0,105,112,0.3)] hover:shadow-[0_8px_25px_rgba(0,105,112,0.5)] hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto overflow-hidden">
+                            <div class="absolute inset-0 w-full h-full bg-white/30 translate-x-[-150%] skew-x-[-15deg] group-hover:animate-shine"></div>
+                            <svg class="text-[22px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.22C21 6.73 16.74 3 12 3c-4.69 0-9 3.65-9 9.28-.6.34-1 .98-1 1.72v2c0 1.1.9 2 2 2h1v-6.1c0-3.87 3.13-7 7-7s7 3.13 7 7V19h-8v2h8c1.1 0 2-.9 2-2v-1.22c.59-.31 1-.92 1-1.64v-2.3c0-.7-.41-1.31-1-1.62z"/><path d="M9 13c0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3-3 1.34-3 3z"/></svg>
+                            <span>درخواست فوری تکنسین</span>
+                        </a>
+                        <a href="/#consultation-form" class="flex items-center justify-center gap-2 bg-surface text-primary border-2 border-primary/20 px-6 md:px-8 py-3.5 md:py-4 rounded-xl font-bold text-base md:text-lg hover:border-primary hover:bg-primary/5 hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto shadow-sm">
+                            <svg class="text-[20px] md:text-[24px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                            <span>درخواست آنلاین خدمات</span>
+                        </a>
+                    </div>
+
+                    <div class="mt-10 pt-8 border-t border-outline-variant/40 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 w-full">
+                        <div class="flex flex-col items-center justify-start gap-2 text-center group cursor-default">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                                <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19 5v2h-4V5h4M9 5v2H5V5h4m10-2h-4c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-10 0H5c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm10 8h-4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2zM9 13H5c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2v-6c0-1.1-.9-2-2-2z"/></svg>
+                            </div>
+                            <span class="font-label-sm md:font-label-md text-sm md:text-base text-on-surface-variant group-hover:text-primary transition-colors font-bold">اعزام فوری سیار</span>
+                        </div>
+                        <div class="flex flex-col items-center justify-start gap-2 text-center group cursor-default">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                                <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M20 7h-4V5c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zM10 5h4v2h-4V5z"/></svg>
+                            </div>
+                            <span class="font-label-sm md:font-label-md text-sm md:text-base text-on-surface-variant group-hover:text-primary transition-colors font-bold">تجهیزات دیاگ اورجینال</span>
+                        </div>
+                        <div class="flex flex-col items-center justify-start gap-2 text-center group cursor-default">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                                <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M23 11.99l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 11.99l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 11.99zm-13 5l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                            </div>
+                            <span class="font-label-sm md:font-label-md text-sm md:text-base text-on-surface-variant group-hover:text-primary transition-colors font-bold">ضمانت کتبی عملکرد</span>
+                        </div>
+                        <div class="flex flex-col items-center justify-start gap-2 text-center group cursor-default">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                                <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16 4h-2V2h-4v2H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-3 12h-2v-3H8v-2h3V8h2v3h3v2h-3v3z"/></svg>
+                            </div>
+                            <span class="font-label-sm md:font-label-md text-sm md:text-base text-on-surface-variant group-hover:text-primary transition-colors font-bold">بدون آسیب به سیم‌کشی</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+        {% endif %}
+        
+    {% endfor %}
+
+    <!-- ================= MAIN CONTENT + STICKY TOC ================= -->
+    <div class="w-full max-w-[1280px] mx-auto px-4 md:px-8 py-8 md:py-12 block lg:flex lg:flex-row items-start lg:gap-12 relative">
+        
+        <!-- SIDEBAR: دراپ‌داون چسبان در موبایل / سایدبار عمودی در دسکتاپ -->
+        <aside class="w-full lg:w-[280px] shrink-0 sticky top-[80px] lg:top-28 z-[45] lg:bg-surface-container-lowest/80 lg:backdrop-blur-md lg:border border-outline-variant/50 lg:rounded-[20px] lg:p-5 lg:shadow-sm mb-10 lg:mb-0">
+            
+            <button class="w-full flex lg:hidden items-center justify-between bg-surface-container-lowest/95 backdrop-blur-xl border border-outline-variant/60 rounded-xl p-4 shadow-lg" onclick="toggleMobileToc()">
+                <span class="font-headline-md text-base font-black text-on-surface flex items-center gap-2">
+                    <svg class="text-primary text-[22px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v2H7zm0-4h2v2H7zm0 8h2v2H7zm4-8h6v2h-6zm0 4h6v2h-6zm0 4h6v2h-6z"/></svg>
+                    فهرست مطالب
+                </span>
+                <svg id="mobile-toc-icon" class="text-on-surface-variant transition-transform duration-300 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+            </button>
+
+            <h3 class="hidden lg:flex font-headline-md text-lg font-black text-on-surface mb-4 items-center gap-2">
+                <svg class="text-primary text-[24px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M4 10h12v2H4zm0-4h16v2H4zm0 8h8v2H4zm10 0v6l5-3z"/></svg>
+                فهرست مطالب
+            </h3>
+
+            <div id="toc-menu" class="hidden lg:block absolute lg:relative top-[calc(100%+8px)] lg:top-auto right-0 w-full lg:w-auto bg-surface-container-lowest lg:bg-transparent border border-outline-variant/40 lg:border-none rounded-2xl lg:rounded-none p-4 lg:p-0 shadow-xl lg:shadow-none z-50">
+                <ul class="flex flex-col relative pr-2 gap-1">
+                    <div class="absolute right-[1px] top-2 bottom-2 w-[2px] bg-outline-variant/30 rounded-full"></div>
+                    
+                    {% for block in blocks %}
+                        {% if block.type != 'hero' and block.type != 'image' %}
+                            <li class="relative pl-2 py-3 lg:py-2 border-b border-outline-variant/20 last:border-0">
+                                <div class="absolute -right-[4px] top-[18px] lg:top-[14px] w-2 h-2 rounded-full bg-surface-container-highest border border-surface-container-lowest transition-colors group-hover:bg-primary"></div>
+                                
+                                <a href="#section-{{ forloop.counter }}" onclick="closeMobileToc()" class="font-body-md text-[14px] md:text-[15px] text-on-surface-variant hover:text-primary transition-colors block pr-4 group font-bold leading-relaxed">
+                                    {% if block.type == 'introduction' %} {{ block.title|default:'معرفی و بررسی' }}
+                                    {% elif block.type == 'specs' %} {{ block.title|default:'مشخصات فنی' }}
+                                    {% elif block.type == 'table' %} {{ block.title|default:'جدول اطلاعات' }}
+                                    {% elif block.type == 'faq' %} {{ block.title|default:'سوالات متداول' }}
+                                    {% elif block.type == 'conclusion' %} {{ block.title|default:'جمع‌بندی' }}
+                                    {% else %} {{ block.title|default:'توضیحات تکمیلی' }}
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+
+        <!-- CONTENT BLOCKS -->
+        <main class="w-full lg:w-[calc(100%-300px)] block">
+            {% for block in blocks %}
+                
+                {% if block.type != 'hero' and block.type != 'image' %}
+                
+                <!-- mb-16 و md:mb-24 به همراه CSS اختصاصی، فاصله‌گذاری‌ها را کاملاً تضمین می‌کند -->
+                <section id="section-{{ forloop.counter }}" class="w-full scroll-mt-32 mb-16 md:mb-24 last:mb-0">
+                    
+                    <!-- ================= SPECS BLOCK ================= -->
+                    {% if block.type == 'specs' and block.is_json %}
+                    <div class="flex items-center gap-3 mb-6 md:mb-8">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                            <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M15 9H9v6h6V9zm-2 4h-2v-2h2v2zm8-2V9h-2V7c0-1.1-.9-2-2-2h-2V3h-2v2h-2V3H9v2H7c-1.1 0-2 .9-2 2v2H3v2h2v2H3v2h2v2c0 1.1.9 2 2 2h2v2h2v-2h2v2h2v-2h2c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2zm-4 6H7V7h10v10z"/></svg>
+                        </div>
+                        <h2 class="font-headline-lg text-xl md:text-3xl text-on-surface font-black">{{ block.title|default:'مشخصات فنی' }}</h2>
+                    </div>
+                    <div class="flex flex-col bg-surface-container-lowest border border-outline-variant/40 rounded-[24px] shadow-sm overflow-hidden">
+                        {% for label, value in block.data.items %}
+                        <div class="flex flex-col md:flex-row md:items-center justify-between p-5 md:p-6 border-b border-outline-variant/40 last:border-0 hover:bg-surface-container-low transition-colors gap-2 md:gap-0">
+                            <span class="font-label-md text-sm md:text-lg text-on-surface-variant w-full md:w-1/3">{{ label }}</span>
+                            <span class="font-body-md text-base md:text-lg text-on-surface font-black text-right md:text-left w-full md:w-2/3 dir-ltr">{{ value }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ================= TABLE BLOCK ================= -->
+                    {% elif block.type == 'table' %}
+                    <div class="flex items-center gap-3 mb-6 md:mb-8">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                            <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H5V5h15zm-5 14h-5v-9h5v9zM5 10h3v9H5v-9zm12 9v-9h3v9h-3z"/></svg>
+                        </div>
+                        <h2 class="font-headline-lg text-xl md:text-3xl text-on-surface font-black">{{ block.title|default:'جدول اطلاعات' }}</h2>
+                    </div>
+                    <div class="overflow-x-auto bg-surface-container-lowest border border-outline-variant/40 rounded-[24px] p-4 md:p-6 shadow-sm content-body">
+                        {% if block.content %}
+                            {{ block.content|safe }}
+                        {% endif %}
+                    </div>
+
+                    <!-- ================= FAQ BLOCK ================= -->
+                    {% elif block.type == 'faq' and block.is_json %}
+                    <div class="flex flex-col gap-2 mb-6 md:mb-8">
+                        <h2 class="font-headline-lg text-xl md:text-3xl font-black text-on-surface flex items-center gap-3">
+                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+                            </div>
+                            {{ block.title|default:'سوالات متداول' }}
+                        </h2>
+                    </div>
+                    <div class="flex flex-col gap-3 md:gap-4">
+                        {% for item in block.data %}
+                        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-primary/30 transition-all">
+                            <button class="w-full flex items-center justify-between p-5 md:p-6 bg-transparent transition-colors group" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-180')">
+                                <span class="font-label-md text-base md:text-lg text-on-surface text-right font-black group-hover:text-primary transition-colors leading-relaxed pr-2">{{ item.question }}</span>
+                                <svg class="arrow-icon text-[24px] md:text-[28px] text-on-surface-variant transition-transform duration-300 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                            </button>
+                            <div class="hidden p-5 md:p-6 pt-0 bg-surface-container-lowest">
+                                <div class="pt-4 border-t border-outline-variant/30">
+                                    <p class="font-body-md text-base md:text-lg text-on-surface-variant leading-loose">{{ item.answer|linebreaksbr }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- ================= GENERIC/INTRO/CONCLUSION TEXT ================= -->
+                    {% else %}
+                    <div class="flex items-center gap-3 mb-6 md:mb-8">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                            {% if block.type == 'conclusion' %}
+                                <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M22 5.18L10.59 16.6l-4.24-4.24 1.41-1.41 2.83 2.83 10-10L22 5.18zM12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8c1.57 0 3.04.46 4.28 1.25l1.45-1.45A9.969 9.969 0 0012 2C6.48 2 2 6.48 2 12s4.48 10 10 10c2.25 0 4.33-.74 6-2l-1.46-1.46c-1.26.93-2.82 1.46-4.54 1.46z"/></svg>
+                            {% else %}
+                                <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                            {% endif %}
+                        </div>
+                        <h2 class="font-headline-lg text-xl md:text-3xl text-on-surface font-black">
+                            {% if block.type == 'conclusion' %}
+                                {{ block.title|default:'جمع‌بندی' }}
+                            {% elif block.type == 'introduction' %}
+                                {{ block.title|default:'معرفی و بررسی' }}
+                            {% else %}
+                                {{ block.title|default:'توضیحات و اطلاعات تکمیلی' }}
+                            {% endif %}
+                        </h2>
+                    </div>
+                    
+                    <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-[24px] p-6 md:p-8 shadow-sm relative">
+                        <div id="long-text-wrapper-{{ forloop.counter }}" class="relative text-truncate-wrapper">
+                            
+                            <!-- کلاس hide-first-title عناوین تکراری را مخفی می‌کند -->
+                            <div class="content-body hide-first-title font-body-md text-base md:text-lg text-on-surface-variant leading-loose text-justify pb-2 lg:pb-0">
+                                {{ block.content|safe }}
+                            </div>
+                            
+                            <!-- گرادیانت محوشونده (موبایل) -->
+                            <div id="long-text-fade-{{ forloop.counter }}" class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-surface-container-lowest to-transparent pointer-events-none fade-overlay"></div>
+                        </div>
+
+                        <!-- دکمه نمایش بیشتر (فقط موبایل) -->
+                        <div class="w-full flex justify-center mt-4 relative z-10 lg:hidden">
+                            <button onclick="toggleTextExpansion('{{ forloop.counter }}')" class="group flex items-center justify-center gap-2 bg-primary/10 text-primary border-2 border-primary/20 hover:bg-primary hover:text-white px-6 py-3 rounded-xl font-bold transition-all duration-300">
+                                <span id="long-text-btn-{{ forloop.counter }}">مطالعه بیشتر</span>
+                                <svg id="long-text-icon-{{ forloop.counter }}" class="transition-transform duration-300 w-[1.5em] h-[1.5em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </section>
+                {% endif %}
+            {% endfor %}
+        </main>
+    </div>
+</div>
+
+<!-- ====== اسکریپت‌ها ====== -->
+<script>
+    // اسکریپت دکمه مطالعه بیشتر با استفاده از کلاس‌های قطعی (همانند قبل)
+    function toggleTextExpansion(id) {
+        const wrapper = document.getElementById(`long-text-wrapper-${id}`);
+        const fade = document.getElementById(`long-text-fade-${id}`);
+        const btnText = document.getElementById(`long-text-btn-${id}`);
+        const btnIcon = document.getElementById(`long-text-icon-${id}`);
+
+        if (wrapper.classList.contains('is-expanded')) {
+            wrapper.classList.remove('is-expanded');
+            fade.classList.remove('is-hidden');
+            btnText.innerText = 'مطالعه بیشتر';
+            btnIcon.classList.remove('rotate-180');
+            document.getElementById(`section-${id}`).scrollIntoView({ behavior: 'smooth' });
+        } else {
+            wrapper.classList.add('is-expanded');
+            fade.classList.add('is-hidden');
+            btnText.innerText = 'بستن توضیحات';
+            btnIcon.classList.add('rotate-180');
+        }
+    }
+
+    // باز و بسته کردن فهرست مطالب در موبایل
+    function toggleMobileToc() {
+        document.getElementById('toc-menu').classList.toggle('hidden');
+        document.getElementById('mobile-toc-icon').classList.toggle('rotate-180');
+    }
+
+    // بستن اتوماتیک فهرست بعد از کلیک روی یک لینک در موبایل
+    function closeMobileToc() {
+        if (window.innerWidth < 1024) { 
+            document.getElementById('toc-menu').classList.add('hidden');
+            document.getElementById('mobile-toc-icon').classList.remove('rotate-180');
+        }
+    }
+</script>
+
+<!-- ====== استایل‌های اختصاصی و انیمیشن‌ها ====== -->
+<style>
+    /* ⭐️ ایجاد فاصله قطعی و اجباری بالای هر بلاک (موبایل و دسکتاپ) ⭐️ */
+    main > section {
+        margin-top: 3.5rem !important;  
+        border-top: 1px solid transparent; 
+    }
+    @media (min-width: 768px) {
+        main > section {
+            margin-top: 5.5rem !important; 
+        }
+    }
+    main > section:first-child {
+        margin-top: 0 !important;
+    }
+
+    /* ⭐️ استایل‌های قطعی برای قابلیت مطالعه بیشتر (فقط موبایل و تبلت‌های کوچک) ⭐️ */
+    @media (max-width: 1023px) {
+        .text-truncate-wrapper {
+            max-height: 120px; 
+            overflow: hidden;
+            transition: max-height 0.8s ease-in-out;
+        }
+        .text-truncate-wrapper.is-expanded {
+            max-height: 8000px; 
+        }
+        .fade-overlay {
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+        .fade-overlay.is-hidden {
+            opacity: 0;
+        }
+    }
+    /* در دسکتاپ (lg به بالا) تمامی محدودیت‌های ارتفاع برداشته می‌شود */
+    @media (min-width: 1024px) {
+        .text-truncate-wrapper {
+            max-height: none !important;
+            overflow: visible !important;
+        }
+        .fade-overlay {
+            display: none !important;
+        }
+    }
+
+    /* اسکرول نرم در کل صفحه برای فهرست مطالب */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    @keyframes shine {
+        0% { transform: translateX(-150%) skewX(-15deg); }
+        100% { transform: translateX(150%) skewX(-15deg); }
+    }
+    .animate-shine {
+        animation: shine 1.2s ease-in-out infinite;
+    }
+
+    /* ⭐️ مخفی کردن تایتل‌های تکراری داخل بادی متنی ⭐️ */
+    .hide-first-title h2:first-child,
+    .hide-first-title h3:first-child,
+    .hide-first-title > div > h2:first-child,
+    .hide-first-title > div > h3:first-child {
+        display: none !important;
+    }
+
+    .content-body h2 { 
+        font-size: 1.5rem; 
+        font-weight: 900; 
+        color: #006970; 
+        margin-top: 2rem; 
+        margin-bottom: 1rem; 
+        line-height: 1.5;
+    }
+    
+    @media (min-width: 768px) {
+        .content-body h2 { font-size: 2rem; margin-top: 2.5rem; }
+    }
+
+    .content-body h3 { 
+        font-size: 1.35rem; 
+        font-weight: 800; 
+        color: #191c1e; 
+        margin-top: 1.75rem; 
+        margin-bottom: 1rem; 
+        line-height: 1.5;
+    }
+
+    @media (min-width: 768px) {
+        .content-body h3 { font-size: 1.5rem; margin-top: 2rem; margin-bottom: 1.25rem;}
+    }
+
+    .content-body p { 
+        margin-bottom: 1.25rem; 
+        line-height: 2.2; 
+    }
+
+    .content-body strong, .content-body b { 
+        color: #000000; 
+        font-weight: 900; 
+    }
+
+    .content-body a { 
+        color: #006970; 
+        font-weight: bold; 
+        text-decoration: none;
+        border-bottom: 2px solid #006970;
+        padding-bottom: 2px;
+        transition: all 0.3s ease;
+    }
+    
+    .content-body a:hover {
+        background-color: #006970;
+        color: #ffffff;
+    }
+
+    .content-body ul { 
+        list-style-type: disc; 
+        margin-right: 1.5rem; 
+        margin-bottom: 1.5rem; 
+    }
+
+    .content-body li { 
+        margin-bottom: 0.75rem; 
+        line-height: 2;
+    }
+    
+    /* استایل اختصاصی جداول برای داخل content-body */
+    .content-body table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+    }
+    .content-body th, .content-body td {
+        border: 1px solid #e2e8f0;
+        padding: 0.75rem;
+        text-align: right;
+    }
+    .content-body th {
+        background-color: #f1f5f9;
+        font-weight: bold;
+    }
+</style>

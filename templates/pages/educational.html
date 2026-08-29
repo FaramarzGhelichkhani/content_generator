@@ -1,0 +1,419 @@
+<div class="flex flex-col w-full rtl bg-background relative">
+    
+    <!-- ================= 1. HERO SECTION (هیرو آموزشی) ================= -->
+    {% for block in blocks %}
+        {% if block.type == 'hero' %}
+        <div class="relative w-full flex flex-col items-center">
+            
+            <!-- تصویر هیرو + تگ H1 -->
+            <section class="relative w-full min-h-[420px] md:min-h-[500px] flex flex-col justify-center items-center -mt-20 pt-20 pb-36 md:pb-44 overflow-hidden">
+                <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ block.image_url|default:'/assets/img/educational-hero.jpg' }}');"></div>
+                <!-- گرادیانت تیره برای خوانایی حداکثری عنوان -->
+                <div class="absolute inset-0 bg-gradient-to-b from-surface-variant/95 via-surface-variant/60 to-surface-variant/95 mix-blend-multiply"></div>
+                
+                <div class="relative z-10 w-full max-w-[1280px] px-4 md:px-8 mx-auto flex flex-col items-center text-center gap-4">
+                    <!-- برچسب دسته‌بندی آموزش -->
+                    <span class="bg-primary/20 text-white font-label-md px-4 py-1.5 rounded-full border border-primary/40 backdrop-blur-md">
+                        آموزش تخصصی و راهنمای گام‌به‌گام
+                    </span>
+
+                    <h1 class="font-headline-xl text-3xl md:text-5xl lg:text-6xl text-white font-black leading-tight drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)] px-4 max-w-5xl">
+                        {{ block.title|default:page.h1 }}
+                    </h1>
+                </div>
+            </section>
+
+            <!-- ⭐️ کارت خلاصه مشخصات آموزش (بیرون‌زده از هیرو) ⭐️ -->
+            <div class="relative z-20 w-full px-4 md:px-8 mx-auto -mt-20 md:-mt-24 mb-8 drop-shadow-xl">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 w-full max-w-[1000px] mx-auto bg-surface-container-lowest/95 backdrop-blur-xl rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-xl border border-outline-variant/40">
+                    
+                    <div class="flex items-center gap-3 p-2">
+                        <div class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                            <svg class="text-[24px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42A8.962 8.962 0 0012 4c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <span class="font-label-sm text-xs text-on-surface-variant">زمان مطالعه</span>
+                            <span class="font-headline-md text-sm md:text-base text-on-surface font-black mt-0.5">۵ الی ۱۰ دقیقه</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2">
+                        <div class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                            <svg class="text-[24px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M17 4h3v16h-3zM5 14h3v6H5zm6-5h3v11h-3z"/></svg>
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <span class="font-label-sm text-xs text-on-surface-variant">سطح آموزش</span>
+                            <span class="font-headline-md text-sm md:text-base text-on-surface font-black mt-0.5">کاربردی / تخصصی</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2">
+                        <div class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                            <svg class="text-[24px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M13.78 15.3l-2.12-2.12 7.07-7.07 2.12 2.12-7.07 7.07zm-7.07 7.07l-2.12-2.12 7.07-7.07 2.12 2.12-7.07 7.07zm2.83-8.49L7.42 11.7l1.41-1.41 2.12 2.12-1.41 1.41zm1.41-1.41l-2.12-2.12 1.41-1.41 2.12 2.12-1.41 1.41zm-1.41-1.41L7.42 8.87l1.41-1.41 2.12 2.12-1.41 1.41zM5.3 13.82l-2.12-2.12 1.41-1.41 2.12 2.12-1.41 1.41zm-2.83 2.83L.35 14.53l1.41-1.41 2.12 2.12-1.41 1.41zm15.56-9.9l-2.12-2.12 7.07-7.07 2.12 2.12-7.07 7.07z"/></svg>
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <span class="font-label-sm text-xs text-on-surface-variant">پیش‌نیاز</span>
+                            <span class="font-headline-md text-sm md:text-base text-on-surface font-black mt-0.5">ریموت یا پین‌کد</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-2">
+                        <div class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                            <svg class="text-[24px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M23 11.99l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 11.99l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 11.99zm-13 5l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <span class="font-label-sm text-xs text-on-surface-variant">تأییدیه فنی</span>
+                            <span class="font-headline-md text-sm md:text-base text-on-surface font-black mt-0.5">تست‌شده روی ECU</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- مقدمه و معرفی هیرو -->
+            {% if block.content %}
+            <div class="w-full max-w-[1000px] mx-auto px-4 md:px-8 relative z-20 mb-8 mt-2">
+                <div class="bg-surface-container-lowest rounded-[24px] md:rounded-[32px] shadow-2xl shadow-surface-variant/20 border border-outline-variant/40 p-6 md:p-10 flex flex-col items-center text-center">
+                    <div class="font-body-lg text-base md:text-lg lg:text-xl text-on-surface-variant font-bold leading-loose text-justify content-body w-full">
+                        {{ block.content|safe }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+        
+        {% endif %}
+    {% endfor %}
+
+
+    <!-- ================= 2. MAIN CONTENT (گرید دو ستونه: فهرست مطالب + محتوای آموزشی) ================= -->
+    <div class="w-full max-w-[1280px] mx-auto px-4 md:px-8 py-8 md:py-12 block lg:flex lg:flex-row items-start lg:gap-12 relative">
+        
+        <!-- SIDEBAR: دراپ‌داون چسبان در موبایل / سایدبار عمودی در دسکتاپ -->
+        <aside class="w-full lg:w-[280px] shrink-0 sticky top-[80px] lg:top-28 z-[45] lg:bg-surface-container-lowest/80 lg:backdrop-blur-md lg:border border-outline-variant/50 lg:rounded-[20px] lg:p-5 lg:shadow-sm mb-10 lg:mb-0">
+            
+            <button class="w-full flex lg:hidden items-center justify-between bg-surface-container-lowest/95 backdrop-blur-xl border border-outline-variant/60 rounded-xl p-4 shadow-lg" onclick="toggleMobileToc()">
+                <span class="font-headline-md text-base font-black text-on-surface flex items-center gap-2">
+                    <svg class="text-primary text-[22px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v2H7zm0-4h2v2H7zm0 8h2v2H7zm4-8h6v2h-6zm0 4h6v2h-6zm0 4h6v2h-6z"/></svg>
+                    سرفصل‌های این آموزش
+                </span>
+                <svg id="mobile-toc-icon" class="text-on-surface-variant transition-transform duration-300 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+            </button>
+
+            <h3 class="hidden lg:flex font-headline-md text-lg font-black text-on-surface mb-4 items-center gap-2">
+                <svg class="text-primary text-[24px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M4 10h12v2H4zm0-4h16v2H4zm0 8h8v2H4zm10 0v6l5-3z"/></svg>
+                فهرست مطالب آموزش
+            </h3>
+
+            <div id="toc-menu" class="hidden lg:block absolute lg:relative top-[calc(100%+8px)] lg:top-auto right-0 w-full lg:w-auto bg-surface-container-lowest lg:bg-transparent border border-outline-variant/40 lg:border-none rounded-2xl lg:rounded-none p-4 lg:p-0 shadow-xl lg:shadow-none z-50">
+                <ul class="flex flex-col relative pr-2 gap-1">
+                    <div class="absolute right-[1px] top-2 bottom-2 w-[2px] bg-outline-variant/30 rounded-full"></div>
+                    
+                    {% for block in blocks %}
+                        {% if block.type != 'hero' and block.type != 'image' %}
+                            <li class="relative pl-2 py-3 lg:py-2 border-b border-outline-variant/20 last:border-0">
+                                <div class="absolute -right-[4px] top-[18px] lg:top-[14px] w-2 h-2 rounded-full bg-surface-container-highest border border-surface-container-lowest transition-colors group-hover:bg-primary"></div>
+                                
+                                <a href="#section-{{ forloop.counter }}" onclick="closeMobileToc()" class="font-body-md text-[14px] md:text-[15px] text-on-surface-variant hover:text-primary transition-colors block pr-4 group font-bold leading-relaxed">
+                                    {% if block.type == 'introduction' %} {{ block.title|default:'مقدمه و بررسی اولیه' }}
+                                    {% elif block.type == 'step_by_step' %} {{ block.title|default:'مراحل گام‌به‌گام' }}
+                                    {% elif block.type == 'warning' or block.type == 'tips' %} {{ block.title|default:'نکات و هشدارهای مهم' }}
+                                    {% elif block.type == 'specs' or block.type == 'tools' %} {{ block.title|default:'ابزارها و تجهیزات لازم' }}
+                                    {% elif block.type == 'table' %} {{ block.title|default:'جدول کدها و راهنما' }}
+                                    {% elif block.type == 'faq' %} {{ block.title|default:'سوالات متداول' }}
+                                    {% elif block.type == 'conclusion' %} {{ block.title|default:'جمع‌بندی و نتیجه‌گیری' }}
+                                    {% else %} {{ block.title|default:'توضیحات تکمیلی' }}
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+
+        <!-- CONTENT BLOCKS -->
+        <main class="w-full lg:w-[calc(100%-300px)] block">
+            {% for block in blocks %}
+                
+                {% if block.type != 'hero' and block.type != 'image' %}
+                <section id="section-{{ forloop.counter }}" class="w-full scroll-mt-32 mb-16 md:mb-24 last:mb-0">
+                    
+                    <!-- ================= WARNING / TIPS BLOCK (نکات ایمنی و هشدارها) ================= -->
+                    {% if block.type == 'warning' or block.type == 'tips' %}
+                    <div class="bg-amber-500/10 border-2 border-amber-500/40 rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-sm">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-md">
+                                <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                            </div>
+                            <h2 class="font-headline-lg text-xl md:text-2xl text-amber-900 dark:text-amber-300 font-black">
+                                {{ block.title|default:'نکات ایمنی بسیار مهم قبل از شروع' }}
+                            </h2>
+                        </div>
+                        <div class="font-body-md text-base md:text-lg text-on-surface leading-loose text-justify content-body">
+                            {{ block.content|safe }}
+                        </div>
+                    </div>
+
+
+                    <!-- ================= STEP BY STEP (مراحل گام‌به‌گام تصویری و متنی) ================= -->
+                    {% elif block.type == 'step_by_step' and block.is_json %}
+                    <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-3xl p-6 md:p-10 shadow-md relative overflow-hidden">
+                        <div class="flex items-center gap-3 mb-8">
+                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M14 10H3v2h11v-2zm0-4H3v2h11V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM3 16h7v-2H3v2z"/></svg>
+                            </div>
+                            <h2 class="font-headline-lg text-xl md:text-3xl text-on-surface font-black">
+                                {{ block.title|default:'مراحل اجرای آموزش' }}
+                            </h2>
+                        </div>
+                        
+                        <div class="flex flex-col gap-6 md:gap-8">
+                            {% for step in block.data %}
+                            <div class="flex flex-col md:flex-row items-start gap-4 md:gap-6 p-5 md:p-6 bg-surface-container-low/60 rounded-2xl border border-outline-variant/30 hover:border-primary/40 transition-all">
+                                <!-- شمارنده مرحله -->
+                                <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-black text-xl shrink-0 shadow-lg shadow-primary/20">
+                                    {{ forloop.counter }}
+                                </div>
+                                <div class="flex flex-col gap-2 w-full">
+                                    <h3 class="font-headline-md text-lg md:text-xl font-black text-on-surface">{{ step.title }}</h3>
+                                    <p class="font-body-md text-base text-on-surface-variant leading-relaxed text-justify">{{ step.desc }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+
+                    <!-- ================= SPECS / TOOLS BLOCK (ابزارها و پیش‌نیازها) ================= -->
+                    {% elif block.type == 'specs' or block.type == 'tools' and block.is_json %}
+                    <div class="flex items-center gap-3 mb-6 md:mb-8">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                            <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+                        </div>
+                        <h2 class="font-headline-lg text-xl md:text-3xl text-on-surface font-black">
+                            {{ block.title|default:'تجهیزات و ابزارهای مورد نیاز' }}
+                        </h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-surface-container-lowest border border-outline-variant/40 rounded-[24px] p-6 md:p-8 shadow-sm">
+                        {% for label, value in block.data.items %}
+                        <div class="flex justify-between items-center p-4 bg-surface-container-low/40 rounded-xl border border-outline-variant/20">
+                            <span class="font-label-md text-sm md:text-base text-on-surface font-bold flex items-center gap-2">
+                                <svg class="text-primary text-[20px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                                {{ label }}
+                            </span>
+                            <span class="font-body-md text-sm md:text-base text-on-surface-variant dir-ltr font-bold">{{ value }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+
+                    <!-- ================= TABLE BLOCK ================= -->
+                    {% elif block.type == 'table' %}
+                    <div class="flex items-center gap-3 mb-6 md:mb-8">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary"><svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M20 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 2v3H5V5h15zm-5 14h-5v-9h5v9zM5 10h3v9H5v-9zm12 9v-9h3v9h-3z"/></svg></div>
+                        <h2 class="font-headline-lg text-xl md:text-3xl text-on-surface font-black">{{ block.title|default:'جدول کدهای خطا و راهنما' }}</h2>
+                    </div>
+                    <div class="overflow-x-auto bg-surface-container-lowest border border-outline-variant/40 rounded-[24px] p-4 md:p-6 shadow-sm content-body">
+                        {% if block.content %}
+                            {{ block.content|safe }}
+                        {% endif %}
+                    </div>
+
+
+                    <!-- ================= FAQ BLOCK ================= -->
+                    {% elif block.type == 'faq' and block.is_json %}
+                    <div class="flex flex-col gap-2 mb-6 md:mb-8">
+                        <h2 class="font-headline-lg text-xl md:text-3xl font-black text-on-surface flex items-center gap-3">
+                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary"><svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg></div>
+                            {{ block.title|default:'پرسش و پاسخ پیرامون این آموزش' }}
+                        </h2>
+                    </div>
+                    <div class="flex flex-col gap-3 md:gap-4">
+                        {% for item in block.data %}
+                        <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-2xl overflow-hidden shadow-sm hover:shadow-md hover:border-primary/30 transition-all">
+                            <button class="w-full flex items-center justify-between p-5 md:p-6 bg-transparent transition-colors group" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-180')">
+                                <span class="font-label-md text-base md:text-lg text-on-surface text-right font-black group-hover:text-primary transition-colors leading-relaxed pr-2">{{ item.question }}</span>
+                                <svg class="arrow-icon text-[24px] md:text-[28px] text-on-surface-variant transition-transform duration-300 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                            </button>
+                            <div class="hidden p-5 md:p-6 pt-0 bg-surface-container-lowest">
+                                <div class="pt-4 border-t border-outline-variant/30">
+                                    <p class="font-body-md text-base md:text-lg text-on-surface-variant leading-loose">{{ item.answer|linebreaksbr }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+
+                    <!-- ================= GENERIC/INTRO/CONCLUSION TEXT ================= -->
+                    {% else %}
+                    <div class="flex items-center gap-3 mb-6 md:mb-8">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                            {% if block.type == 'conclusion' %}
+                                <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M22 5.18L10.59 16.6l-4.24-4.24 1.41-1.41 2.83 2.83 10-10L22 5.18zM12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8c1.57 0 3.04.46 4.28 1.25l1.45-1.45A9.969 9.969 0 0012 2C6.48 2 2 6.48 2 12s4.48 10 10 10c2.25 0 4.33-.74 6-2l-1.46-1.46c-1.26.93-2.82 1.46-4.54 1.46z"/></svg>
+                            {% else %}
+                                <svg class="text-[24px] md:text-[28px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                            {% endif %}
+                        </div>
+                        <h2 class="font-headline-lg text-xl md:text-3xl text-on-surface font-black">
+                            {% if block.type == 'conclusion' %} {{ block.title|default:'جمع‌بندی و نتیجه‌گیری نهایی' }}
+                            {% elif block.type == 'introduction' %} {{ block.title|default:'معرفی و مبانی فنی' }}
+                            {% else %} {{ block.title|default:'توضیحات تکمیلی آموزش' }}
+                            {% endif %}
+                        </h2>
+                    </div>
+                    
+                    <div class="bg-surface-container-lowest border border-outline-variant/40 rounded-[24px] p-6 md:p-8 shadow-sm relative">
+                        <div id="long-text-wrapper-{{ forloop.counter }}" class="relative text-truncate-wrapper">
+                            
+                            <!-- کلاس hide-first-title عناوین تکراری را مخفی می‌کند -->
+                            <div class="content-body hide-first-title font-body-md text-base md:text-lg text-on-surface-variant leading-loose text-justify pb-2 lg:pb-0">
+                                {{ block.content|safe }}
+                            </div>
+                            
+                            <!-- گرادیانت محوشونده (موبایل) -->
+                            <div id="long-text-fade-{{ forloop.counter }}" class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-surface-container-lowest to-transparent pointer-events-none fade-overlay"></div>
+                        </div>
+
+                        <!-- دکمه نمایش بیشتر (فقط موبایل) -->
+                        <div class="w-full flex justify-center mt-6 relative z-10 lg:hidden">
+                            <button onclick="toggleTextExpansion('{{ forloop.counter }}')" class="group flex items-center justify-center gap-2 bg-primary/10 text-primary border-2 border-primary/20 hover:bg-primary hover:text-white px-6 py-3 rounded-xl font-bold transition-all duration-300 w-full">
+                                <span id="long-text-btn-{{ forloop.counter }}">مطالعه کامل مطلب</span>
+                                <svg id="long-text-icon-{{ forloop.counter }}" class="transition-transform duration-300 w-[1.5em] h-[1.5em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </section>
+                {% endif %}
+            {% endfor %}
+
+            <!-- ⭐️ بنر پشتیبانی و اعزام کارشناس در انتهای آموزش ⭐️ -->
+            <div class="mt-12 bg-primary/5 border border-primary/20 rounded-3xl p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex flex-col gap-2 text-center md:text-right">
+                    <h3 class="font-headline-md text-xl md:text-2xl font-black text-on-surface">حین اجرای آموزش با مشکل مواجه شدید؟</h3>
+                    <p class="font-body-md text-sm md:text-base text-on-surface-variant">تکنسین‌های ریموت سیکلت آماده رفع خطای ECU و کددهی تخصصی در محل شما هستند.</p>
+                </div>
+                <a href="tel:09204407640" class="shrink-0 bg-primary text-white font-bold px-8 py-3.5 rounded-xl flex items-center gap-2 shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
+                    <svg class="text-[22px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+                    تماس با کارشناس فنی
+                </a>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- ====== اسکریپت‌ها ====== -->
+<script>
+    // اسکریپت دکمه مطالعه بیشتر با استفاده از کلاس‌های قطعی
+    function toggleTextExpansion(id) {
+        const wrapper = document.getElementById(`long-text-wrapper-${id}`);
+        const fade = document.getElementById(`long-text-fade-${id}`);
+        const btnText = document.getElementById(`long-text-btn-${id}`);
+        const btnIcon = document.getElementById(`long-text-icon-${id}`);
+
+        if (wrapper.classList.contains('is-expanded')) {
+            wrapper.classList.remove('is-expanded');
+            fade.classList.remove('is-hidden');
+            btnText.innerText = 'مطالعه کامل مطلب';
+            btnIcon.classList.remove('rotate-180');
+            document.getElementById(`section-${id}`).scrollIntoView({ behavior: 'smooth' });
+        } else {
+            wrapper.classList.add('is-expanded');
+            fade.classList.add('is-hidden');
+            btnText.innerText = 'بستن توضیحات';
+            btnIcon.classList.add('rotate-180');
+        }
+    }
+
+    // باز و بسته کردن فهرست مطالب در موبایل
+    function toggleMobileToc() {
+        document.getElementById('toc-menu').classList.toggle('hidden');
+        document.getElementById('mobile-toc-icon').classList.toggle('rotate-180');
+    }
+
+    // بستن اتوماتیک فهرست بعد از کلیک روی یک لینک در موبایل
+    function closeMobileToc() {
+        if (window.innerWidth < 1024) { 
+            document.getElementById('toc-menu').classList.add('hidden');
+            document.getElementById('mobile-toc-icon').classList.remove('rotate-180');
+        }
+    }
+</script>
+
+<!-- ====== استایل‌های اختصاصی و انیمیشن‌ها ====== -->
+<style>
+    /* ⭐️ ایجاد فاصله قطعی و اجباری بالای هر بلاک (موبایل و دسکتاپ) ⭐️ */
+    main > section {
+        margin-top: 3.5rem !important;  
+        border-top: 1px solid transparent; 
+    }
+    @media (min-width: 768px) {
+        main > section {
+            margin-top: 5.5rem !important; 
+        }
+    }
+    main > section:first-child {
+        margin-top: 0 !important;
+    }
+
+    /* ⭐️ استایل‌های قطعی برای قابلیت مطالعه بیشتر (فقط موبایل و تبلت‌های کوچک) ⭐️ */
+    @media (max-width: 1023px) {
+        .text-truncate-wrapper {
+            max-height: 180px; 
+            overflow: hidden;
+            transition: max-height 0.8s ease-in-out;
+        }
+        .text-truncate-wrapper.is-expanded {
+            max-height: 8000px; 
+        }
+        .fade-overlay {
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+        .fade-overlay.is-hidden {
+            opacity: 0;
+        }
+    }
+    /* در دسکتاپ (lg به بالا) تمامی محدودیت‌های ارتفاع برداشته می‌شود */
+    @media (min-width: 1024px) {
+        .text-truncate-wrapper {
+            max-height: none !important;
+            overflow: visible !important;
+        }
+        .fade-overlay {
+            display: none !important;
+        }
+    }
+
+    /* اسکرول نرم در کل صفحه برای فهرست مطالب */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* ⭐️ مخفی کردن تایتل‌های تکراری داخل بادی متنی ⭐️ */
+    .hide-first-title h2:first-child,
+    .hide-first-title h3:first-child,
+    .hide-first-title > div > h2:first-child,
+    .hide-first-title > div > h3:first-child {
+        display: none !important;
+    }
+
+    .content-body h2 { font-size: 1.5rem; font-weight: 900; color: #006970; margin-top: 2rem; margin-bottom: 1rem; line-height: 1.5; }
+    @media (min-width: 768px) { .content-body h2 { font-size: 2rem; margin-top: 2.5rem; } }
+    .content-body h3 { font-size: 1.35rem; font-weight: 800; color: #191c1e; margin-top: 1.75rem; margin-bottom: 1rem; line-height: 1.5; }
+    @media (min-width: 768px) { .content-body h3 { font-size: 1.5rem; margin-top: 2rem; margin-bottom: 1.25rem;} }
+    .content-body p { margin-bottom: 1.25rem; line-height: 2.2; }
+    .content-body strong, .content-body b { color: #000000; font-weight: 900; }
+    .content-body a { color: #006970; font-weight: bold; text-decoration: none; border-bottom: 2px solid #006970; padding-bottom: 2px; transition: all 0.3s ease; }
+    .content-body a:hover { background-color: #006970; color: #ffffff; }
+    .content-body ul { list-style-type: disc; margin-right: 1.5rem; margin-bottom: 1.5rem; }
+    .content-body li { margin-bottom: 0.75rem; line-height: 2; }
+    .content-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    .content-body th, .content-body td { border: 1px solid #e2e8f0; padding: 0.75rem; text-align: right; }
+    .content-body th { background-color: #f1f5f9; font-weight: bold; }
+</style>

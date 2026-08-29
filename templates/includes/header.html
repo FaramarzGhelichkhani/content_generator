@@ -1,0 +1,206 @@
+<!-- ====== HEADER ====== -->
+<header class="fixed top-0 w-full z-50 bg-surface/95 backdrop-blur-md shadow-sm border-b border-outline-variant/20 transition-all duration-300">
+    <!-- افزودن relative برای کنترل المان‌های مطلق در موبایل -->
+    <div class="relative h-20 w-full max-w-[1280px] px-4 md:px-margin mx-auto flex items-center justify-between">
+        
+        <!-- === سمت راست موبایل: دکمه همبرگری === -->
+        <button onclick="openMobileMenu()" aria-label="باز کردن منو" class="lg:hidden text-on-surface hover:text-primary transition-colors p-2 -mr-2 flex items-center justify-center">
+            <svg class="text-[30px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        </button>
+
+        <!-- === مرکز موبایل / سمت راست دسکتاپ: لوگو و نام برند === -->
+        <!-- در موبایل وسط‌چین می‌شود و در دسکتاپ سر جای خود برمی‌گردد -->
+        <div class="absolute left-1/2 -translate-x-1/2 lg:static lg:transform-none flex items-center">
+            <a href="/" class="flex items-center gap-2.5 md:gap-3 group" aria-label="صفحه اصلی ریموت سیکلت">
+                <img alt="لوگوی ریموت سیکلت" class="h-32 md:h-36 w-auto object-contain transition-transform duration-300 group-hover:scale-105" src="/assets/img/logo3.png">
+                <!-- استفاده از whitespace-nowrap برای جلوگیری از شکستن متن -->
+                <!-- <span class="font-headline-lg text-xl md:text-2xl lg:text-3xl text-primary font-black tracking-tight whitespace-nowrap">ریموت سیکلت</span> -->
+            </a>
+        </div>
+
+        <!-- === وسط دسکتاپ: منوی ناوبری === -->
+        <nav class="hidden lg:flex items-center h-full" aria-label="منوی اصلی">
+            <ul class="flex items-center gap-8 h-full m-0 p-0">
+                <!-- آیتم ساده: صفحه اصلی -->
+                <li class="flex items-center h-full">
+                    <a href="/" class="font-label-md text-[16px] text-on-surface-variant hover:text-primary transition-colors font-bold relative after:content-[''] after:absolute after:-bottom-1.5 after:right-0 after:w-0 after:h-[2px] after:bg-primary hover:after:w-full after:transition-all after:duration-300">
+                        صفحه اصلی
+                    </a>
+                </li>
+
+                <!-- آیتم دراپ‌داون: خدمات -->
+                <li class="group relative flex items-center h-full">
+                    <button aria-haspopup="true" aria-expanded="false" class="font-label-md text-[16px] text-on-surface-variant group-hover:text-primary transition-colors flex items-center gap-1 font-bold cursor-pointer bg-transparent border-none">
+                        خدمات تخصصی 
+                        <svg class="text-[20px] transition-transform duration-300 group-hover:rotate-180 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                    </button>
+                    <!-- منوی کشویی خدمات -->
+                    <ul class="absolute top-full right-0 w-60 opacity-0 invisible translate-y-3 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 bg-surface-container-lowest border border-outline-variant/30 shadow-xl rounded-xl flex flex-col z-[100] py-2 overflow-hidden">
+                        {% for service in all_services %}
+                        {% if service.slug != 'shop' %}
+                            <li>
+                                <a href="/services/{{ service.slug }}" class="px-5 py-3.5 text-[15px] font-body-md text-on-surface hover:bg-primary/5 hover:text-primary transition-colors border-b border-outline-variant/10 last:border-0 flex items-center gap-2">
+                                    <svg class="text-[18px] text-primary/70 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+                                    {{ service.name }}
+                                </a>
+                            </li>
+                        {% elif service.slug == 'shop' %}
+                            <li>
+                                <a href="/{{ service.slug }}" class="px-5 py-3.5 text-[15px] font-body-md text-on-surface hover:bg-primary/5 hover:text-primary transition-colors border-b border-outline-variant/10 last:border-0 flex items-center gap-2">
+                                    <svg class="text-[18px] text-primary/70 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+                                    {{ service.name }}
+                                </a>
+                            </li>
+                        {% endif %}    
+                        {% endfor %}
+                    </ul>
+                </li>
+                
+                <!-- آیتم دراپ‌داون: برندها (اسکرول دار) -->
+                <li class="group relative flex items-center h-full">
+                    <button aria-haspopup="true" aria-expanded="false" class="font-label-md text-[16px] text-on-surface-variant group-hover:text-primary transition-colors flex items-center gap-1 font-bold cursor-pointer bg-transparent border-none">
+                        برندها 
+                        <svg class="text-[20px] transition-transform duration-300 group-hover:rotate-180 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                    </button>
+                    <!-- منوی کشویی برندها -->
+                    <ul class="custom-scrollbar absolute top-full right-0 w-52 opacity-0 invisible translate-y-3 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 bg-surface-container-lowest border border-outline-variant/30 shadow-xl rounded-xl block z-[100] py-2 max-h-[320px] overflow-y-auto overscroll-contain pl-1">
+                        {% for brand in all_brands %}
+                            <li class="shrink-0">
+                                <a href="/{{ brand.slug }}" class="px-5 py-3.5 text-[15px] font-body-md text-on-surface hover:bg-primary/5 hover:text-primary transition-colors border-b border-outline-variant/10 last:border-0 flex items-center gap-2">
+                                    <svg class="text-[18px] text-primary/70 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19.44 9.03L15.41 5H11v2h3.59l2 2H5c-2.8 0-5 2.2-5 5s2.2 5 5 5c2.46 0 4.45-1.69 4.9-4h4.2c.45 2.31 2.44 4 4.9 4 2.8 0 5-2.2 5-5 0-2.12-1.33-3.93-3.16-4.66l-.5-1.31zM5 17c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm14 0c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>
+                                    {{ brand.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+
+                <!-- آیتم ساده: مقالات آموزشی -->
+                <li class="flex items-center h-full">
+                    <a href="/blog" class="font-label-md text-[16px] text-on-surface-variant hover:text-primary transition-colors font-bold relative after:content-[''] after:absolute after:-bottom-1.5 after:right-0 after:w-0 after:h-[2px] after:bg-primary hover:after:w-full after:transition-all after:duration-300">
+                        مقالات آموزشی
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- === سمت چپ: دکمه‌های تماس === -->
+        <div class="flex items-center gap-3">
+            <!-- دکمه موبایل (آیکون تماس) -->
+            <!-- فقط در موبایل نمایش داده می‌شود (lg:hidden) -->
+            <a href="tel:09204407640" class="flex lg:hidden bg-primary text-white p-2.5 rounded-xl hover:bg-opacity-90 transition-all  transition-colors  hover:shadow-lg items-center justify-center shadow-sm" aria-label="تماس فوری">
+                <svg class="text-[24px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+            </a>
+
+            <!-- دکمه دسکتاپ -->
+            <!-- فقط در صفحه‌های بزرگ نمایش داده می‌شود (hidden lg:flex) -->
+            <a href="tel:09204407640" class="hidden lg:flex bg-primary text-white px-5 py-2.5 rounded-xl font-headline-md text-[15px] hover:bg-opacity-90 transition-all shadow-md hover:shadow-lg items-center gap-2 hover:-translate-y-0.5" aria-label="تماس برای درخواست خدمات">
+                <svg class="text-[22px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.22C21 6.73 16.74 3 12 3c-4.69 0-9 3.65-9 9.28-.6.34-1 .98-1 1.72v2c0 1.1.9 2 2 2h1v-6.1c0-3.87 3.13-7 7-7s7 3.13 7 7V19h-8v2h8c1.1 0 2-.9 2-2v-1.22c.59-.31 1-.92 1-1.64v-2.3c0-.7-.41-1.31-1-1.62z"/><path d="M9 13c0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3-3 1.34-3 3z"/></svg>
+                <span>درخواست خدمات</span>
+            </a>
+        </div>
+        
+    </div>
+</header>
+
+<!-- ========================================== -->
+<!-- ========== منوی کشویی موبایل (Sidebar) ====== -->
+<!-- ========================================== -->
+
+<!-- پس‌زمینه تیره هنگام باز شدن منو -->
+<div id="mobile-overlay" onclick="closeMobileMenu()" class="fixed inset-0 bg-black/60 z-[100] hidden backdrop-blur-sm transition-opacity opacity-0 duration-300"></div>
+
+<!-- بدنه اصلی منوی موبایل (راست‌چین) -->
+<div id="mobile-menu" class="fixed top-0 right-0 h-full w-[280px] sm:w-[320px] bg-surface-container-lowest z-[101] translate-x-full transition-transform duration-300 shadow-2xl flex flex-col overflow-y-auto pb-6">
+    
+    <!-- هدر داخل منوی موبایل -->
+    <div class="h-20 border-b border-outline-variant/20 flex items-center justify-between px-5 shrink-0">
+        <span class="font-headline-md text-xl text-primary font-black">منوی دسترسی</span>
+        <button onclick="closeMobileMenu()" class="text-on-surface-variant hover:text-error transition-colors p-1 flex items-center justify-center bg-surface-container rounded-full">
+            <svg class="text-[24px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+    </div>
+    
+    <!-- لیست لینک‌های موبایل -->
+    <nav class="flex flex-col py-4 px-3 gap-1">
+        <a href="/" class="px-4 py-3 rounded-xl font-label-md text-base text-on-surface hover:bg-primary/10 hover:text-primary transition-colors font-bold">صفحه اصلی</a>
+        
+        <!-- بخش خدمات -->
+        <div class="px-4 py-2 mt-2">
+            <span class="font-label-sm text-sm text-on-surface-variant/70 font-bold">خدمات تخصصی</span>
+        </div>
+        <div class="flex flex-col gap-1 border-r-2 border-primary/20 mr-4 pr-2">
+            {% for service in all_services %}
+                {% if service.slug != 'shop' %}
+                <a href="/services/{{ service.slug }}" class="px-3 py-2.5 rounded-lg font-body-md text-[15px] text-on-surface hover:bg-primary/5 hover:text-primary transition-colors flex items-center gap-2">
+                    <svg class="text-[18px] text-primary/60 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+                    {{ service.name }}
+                </a>
+                {% elif service.slug == 'shop' %}
+                <a href="/{{ service.slug }}" class="px-3 py-2.5 rounded-lg font-body-md text-[15px] text-on-surface hover:bg-primary/5 hover:text-primary transition-colors flex items-center gap-2">
+                    <svg class="text-[18px] text-primary/60 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+                    {{ service.name }}
+                </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- بخش برندها -->
+        <div class="px-4 py-2 mt-4">
+            <span class="font-label-sm text-sm text-on-surface-variant/70 font-bold">برندهای تحت پوشش</span>
+        </div>
+        <div class="flex flex-col gap-1 border-r-2 border-primary/20 mr-4 pr-2">
+            {% for brand in all_brands %}
+                <a href="/{{ brand.slug }}" class="px-3 py-2.5 rounded-lg font-body-md text-[15px] text-on-surface hover:bg-primary/5 hover:text-primary transition-colors flex items-center gap-2">
+                    <svg class="text-[18px] text-primary/60 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M19.44 9.03L15.41 5H11v2h3.59l2 2H5c-2.8 0-5 2.2-5 5s2.2 5 5 5c2.46 0 4.45-1.69 4.9-4h4.2c.45 2.31 2.44 4 4.9 4 2.8 0 5-2.2 5-5 0-2.12-1.33-3.93-3.16-4.66l-.5-1.31zM5 17c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm14 0c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>
+                    {{ brand.name }}
+                </a>
+            {% endfor %}
+        </div>
+
+        <a href="/blog" class="px-4 py-3 mt-4 rounded-xl font-label-md text-base text-on-surface hover:bg-primary/10 hover:text-primary transition-colors font-bold">مقالات آموزشی</a>
+    </nav>
+</div>
+
+<!-- اسکریپت کنترل منوی موبایل -->
+<script>
+    function openMobileMenu() {
+        const overlay = document.getElementById('mobile-overlay');
+        const menu = document.getElementById('mobile-menu');
+        
+        // نمایش پس‌زمینه تیره
+        overlay.classList.remove('hidden');
+        // تأخیر بسیار کوتاه برای اجرای نرم انیمیشن Opacity
+        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        
+        // باز شدن منو از سمت راست
+        menu.classList.remove('translate-x-full');
+        
+        // قفل کردن اسکرول صفحه اصلی وقتی منو باز است
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+        const overlay = document.getElementById('mobile-overlay');
+        const menu = document.getElementById('mobile-menu');
+        
+        // پنهان کردن با انیمیشن
+        overlay.classList.add('opacity-0');
+        menu.classList.add('translate-x-full');
+        
+        // بعد از اتمام انیمیشن، از DOM مخفی شود
+        setTimeout(() => overlay.classList.add('hidden'), 300);
+        
+        // بازگرداندن اسکرول صفحه
+        document.body.style.overflow = '';
+    }
+</script>
+
+<style>
+    /* استایل‌های مربوط به اسکرول‌بار دسکتاپ که در پیام قبلی داشتیم */
+    .custom-scrollbar { scrollbar-width: thin; scrollbar-color: rgba(0, 105, 112, 0.6) #f1f5f9; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background-color: #f1f5f9; border-radius: 8px; margin: 8px 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(0, 105, 112, 0.6); border-radius: 8px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 105, 112, 1); }
+</style>

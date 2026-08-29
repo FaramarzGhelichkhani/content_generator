@@ -1,151 +1,257 @@
 # generation/services/orchestrator.py
+import os
 import json
 import re
+import traceback
+from django.conf import settings
 from django.utils import timezone
+
 from content.models import PageContent
-
-# ایمپورت بازوهای اجرایی خط تولید
-from generation.agents.planner import generate_page_plan
-from generation.agents.writer import generate_all_blocks
-from generation.agents.link_injector import inject_links_and_references
-from generation.agents.seo_reviewer import review_page_seo
 from generation.services.schema_generator import generate_advanced_schema
+from generation.agents.prompt_manager import (
+    PromptManager, PageOutline, WriterOutput, 
+    SEOAuditResult, HumanizerOutput, LinkBuilderOutput
+)
+from generation.utils.llm_manager import get_llm
 
+class ContentOrchestratorService:
+    MAX_ITERATIONS = 3 
 
-def run_orchestrator_pipeline(queryset):
-    """
-    ارکستراتور ارشد و هماهنگ‌کننده خط تولید محتوای خودترمیمی.
-    """
-    contents = list(queryset)[:5]
-    results = []
-
-    for page_content in contents:
-        brief = page_content.page_brief
-        base_domain = brief.project.base_domain
+    def __init__(self, page_content: PageContent):
+        self.content_obj = page_content
+        self.brief = page_content.page_brief
+        self.prompt_manager = PromptManager(self.brief)
         
-        print(f"\n========================================")
-        print(f"[*] Orchestrating Content Pipeline for: {brief.keyword.text}")
-        print(f"========================================")
+        self.planner_llm = get_llm(temperature=0.2).with_structured_output(PageOutline)
+        self.writer_llm = get_llm(temperature=0.4).with_structured_output(WriterOutput)
+        self.seo_llm = get_llm(temperature=0.1).with_structured_output(SEOAuditResult)
+        self.humanizer_llm = get_llm(temperature=0.5).with_structured_output(HumanizerOutput)
+        self.link_llm = get_llm(model_name="gemini-3.1-flash-lite", temperature=0.0).with_structured_output(LinkBuilderOutput)
 
-        # --------------------------------------------------------
-        # پیش‌پردازش: بررسی وابستگی‌های کلاستر به پیلار
-        # --------------------------------------------------------
-        parent_context = None
-        if brief.page_type == "cluster" and brief.parent_page:
-            print(f"[*] Cluster Page Detected. Fetching Parent (Pillar) Data: {brief.parent_page.keyword.text}")
+    def _log_prompt(self, agent_name: str, prompt_value):
+        try:
+            log_dir = os.path.join(settings.BASE_DIR, 'logs', 'prompts', str(self.content_obj.id))
+            os.makedirs(log_dir, exist_ok=True)
             
-            # بررسی اینکه آیا صفحه والد محتوایی تولید شده دارد یا خیر
-            if hasattr(brief.parent_page, 'content') and brief.parent_page.content:
-                parent_content_obj = brief.parent_page.content
-                parent_context = {
-                    "parent_keyword": brief.parent_page.keyword.text,
-                    "parent_url": brief.parent_page.url_path,
-                    "parent_outline": parent_content_obj.outline_json, # ارسال ساختار برای جلوگیری از تکرار تیتر
-                    "parent_focus_keyword": parent_content_obj.focus_keyword,
-                }
-                print(f"[+] Parent outline successfully loaded to prevent cannibalization.")
-            else:
-                print(f"[-] Warning: Parent Pillar page '{brief.parent_page.keyword.text}' does not have generated content yet.")
+            file_path = os.path.join(log_dir, f"{agent_name}_iter_{self.content_obj.iterations}.txt")
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(prompt_value.to_string())
+        except Exception as e:
+            print(f"Failed to log prompt for {agent_name}: {e}")
 
-        # --------------------------------------------------------
-        # مرحله ۱: لایه برنامه‌ریزی ساختار (Planner Agent)
-        # --------------------------------------------------------
-        # پارامتر parent_context را به پلنر پاس می‌دهیم
-        if not generate_page_plan(page_content, parent_context=parent_context):
-            page_content.generation_status = PageContent.GenerationStatus.FAILED if hasattr(PageContent.GenerationStatus, 'FAILED') else PageContent.GenerationStatus.PENDING
-            page_content.generation_error = "توقف خط تولید: خطا در فاز برنامه‌ریزی (Planner)"
-            page_content.save()
-            results.append((brief.keyword.text, "خطا در فاز برنامه‌ریزی ساختار"))
-            continue
+    def _log_error(self, step: str, error_msg: str):
+        self.content_obj.generation_error = f"Error in [{step}]: {error_msg}"
+        self.content_obj.generation_status = PageContent.GenerationStatus.FAILED
+        self.content_obj.save()
 
-        seo_approved = False
-        max_loops = 3
-        local_failsafe_counter = 0
-        
-        if page_content.generation_status == PageContent.GenerationStatus.COMPLETED:
-            seo_approved = True
+    def run(self):
+        try:
+            # ---------------------------------------------------------
+            # 1. PLANNER STAGE
+            # ---------------------------------------------------------
+            if self.content_obj.generation_status == PageContent.GenerationStatus.PENDING:
+                self.content_obj.generation_status = PageContent.GenerationStatus.PLANNING
+                self.content_obj.save()
 
-        # --------------------------------------------------------
-        # مرحله ۲: حلقه هوشمند خودترمیمی (Writer <-> SEO Reviewer)
-        # --------------------------------------------------------
-        writer_aborted = False
-        while not seo_approved and page_content.iterations < max_loops and local_failsafe_counter < max_loops:
-            local_failsafe_counter += 1
-            page_content.refresh_from_db()
+                prompt = self.prompt_manager.get_planner_prompt()
+                self._log_prompt("1_Planner", prompt)
+                
+                print(f"[{self.content_obj.id}] Running Planner Agent...")
+                outline: PageOutline = self.planner_llm.invoke(prompt.to_messages())
+                
+                self.content_obj.seo_title = outline.seo_title
+                self.content_obj.meta_description = outline.meta_description
+                self.content_obj.h1 = outline.h1_title
+                self.content_obj.focus_keyword = outline.focus_keyword
+                self.content_obj.outline_json = outline.model_dump()
+                self.content_obj.generation_status = PageContent.GenerationStatus.WRITING
+                self.content_obj.save()
+
+            # ---------------------------------------------------------
+            # 2. WRITER STAGE
+            # ---------------------------------------------------------
+            # ---------------------------------------------------------
+            # 2. WRITER STAGE (هوشمند شده)
+            # ---------------------------------------------------------
+            if self.content_obj.generation_status == PageContent.GenerationStatus.WRITING:
+                print(f"[{self.content_obj.id}] Running Writer Agents...")
+                outline_data = self.content_obj.outline_json
+                blocks = outline_data.get('blocks', [])
+                
+                generated_blocks = []
+                accumulated_html = ""
+                total_blocks = len(blocks)
+
+                for idx, block in enumerate(blocks):
+                    b_type = block.get("block_type", "")
+                    b_title = block.get("title", "بدون عنوان")
+                    print(f"[{self.content_obj.id}] Processing Block {idx + 1}/{total_blocks} -> Type: {b_type} | Title: {b_title}")
+                    
+                    content_str = ""
+
+                    # --- حالت اول: بلوک تصویر (Bypass LLM) ---
+                    if b_type == "image":
+                        # نیازی به هوش مصنوعی نیست! عنوان یا هدف بلوک را به عنوان Alt Text در نظر می‌گیریم
+                        content_str = block.get("title") or block.get("purpose_and_intent") or "تصویر مرتبط با خدمات"
+                        print(f"[{self.content_obj.id}] ⚡ Bypassing LLM for image block. Alt text extracted.")
+
+                    # --- حالت دوم: بلوک هیرو (اختصاصی کپی‌رایتر) ---
+                    elif b_type == "hero":
+                        print(f"[{self.content_obj.id}] this is hero agent")
+                        prompt = self.prompt_manager.get_hero_writer_prompt(current_block=block, focus_keyword=self.content_obj.focus_keyword)
+                        self._log_prompt(f"2_Writer_Hero", prompt)
+                        # استفاده از دمای بالاتر (مثلا 0.6) برای خلاقیت بیشتر در کپی‌رایتینگ (اختیاری)
+                        hero_out: WriterOutput = self.writer_llm.invoke(prompt.to_messages())
+                        content_str = hero_out.content
+                    
+                    # --- حالت سوم: سایر بلوک‌ها (رایتر فنی) ---
+                    else:
+                        prompt = self.prompt_manager.get_writer_prompt(current_block=block, previous_content_html=accumulated_html, focus_keyword=self.content_obj.focus_keyword)
+                        self._log_prompt(f"2_Writer_Block_{idx}", prompt)
+                        
+                        writer_out: WriterOutput = self.writer_llm.invoke(prompt.to_messages())
+                        content_str = writer_out.content
+
+                        # اضافه کردن اجباری H2 اگر هوش مصنوعی جا انداخته بود (به جز برای faq و specs)
+                        if b_type not in ["faq", "specs"]:
+                            if not any(tag in content_str.lower() for tag in ["<h1", "<h2", "<h3", "<h4"]):
+                                if b_title:
+                                    content_str = f"<h2>{b_title}</h2>\n" + content_str
+
+                    # ذخیره خروجی نهایی بلوک در آرایه
+                    generated_blocks.append({
+                        "block_id": idx,
+                        "block_type": b_type,
+                        "title": b_title,
+                        "content": content_str
+                    })
+                    
+                    # اضافه کردن متن به سوابق (تصاویر را به سوابق نمی‌دهیم تا مدل گیج نشود)
+                    if b_type != "image":
+                        accumulated_html += f"\n<!-- Block {idx}: {b_type} -->\n{content_str}\n"
+
+                self.content_obj.blocks_json = generated_blocks
+                self.content_obj.generation_status = PageContent.GenerationStatus.REVIEWING
+                self.content_obj.save()
+
+            # ---------------------------------------------------------
+            # 3. SEO REVIEWER STAGE
+            # ---------------------------------------------------------
+            if self.content_obj.generation_status == PageContent.GenerationStatus.REVIEWING:
+                print(f"[{self.content_obj.id}] Running SEO Reviewer Agent...")
+                generated_blocks = self.content_obj.blocks_json
+                
+                prompt = self.prompt_manager.get_seo_reviewer_prompt(generated_blocks)
+                self._log_prompt("3_SEO_Reviewer", prompt)
+                
+                seo_result: SEOAuditResult = self.seo_llm.invoke(prompt.to_messages())
+                
+                self.content_obj.seo_score = seo_result.score
+                self.content_obj.seo_report = seo_result.model_dump()
+                
+                if not seo_result.is_approved:
+                    print(f"[{self.content_obj.id}] SEO Failed! Score: {seo_result.score}. Iteration: {self.content_obj.iterations}")
+                    self.content_obj.iterations += 1
+                    
+                    logs = self.content_obj.agent_logs if isinstance(self.content_obj.agent_logs, list) else []
+                    logs.append({
+                        "iteration": self.content_obj.iterations,
+                        "report": seo_result.summary_report,
+                        "failed_blocks": [fb.model_dump() for fb in seo_result.failed_blocks]
+                    })
+                    self.content_obj.agent_logs = logs
+                    
+                    if self.content_obj.iterations >= self.MAX_ITERATIONS:
+                        self._log_error("SEO_Review", "Max iterations reached. SEO standards not met.")
+                        return False
+                    
+                    self.content_obj.generation_status = PageContent.GenerationStatus.WRITING
+                    self.content_obj.save()
+                    return self.run()
+                else:
+                    self.content_obj.save()
+
+            # ---------------------------------------------------------
+            # 4. HUMANIZER STAGE 
+            # ---------------------------------------------------------
+            print(f"[{self.content_obj.id}] Running Humanizer Agent on ALL blocks simultaneously...")
+            generated_blocks = self.content_obj.blocks_json
             
-            print(f"\n[*] [Loop {local_failsafe_counter}/{max_loops}] Invoking Resumable Writer Agent...")
-            if not generate_all_blocks(page_content):
-                print(f"[-] Writer Agent critical interruption.")
-                writer_aborted = True
-                break
-
-            print(f"[*] [Loop {local_failsafe_counter}/{max_loops}] Invoking Smart Link Injector...")
-            inject_links_and_references(page_content, base_domain)
-
-            print(f"[*] [Loop {local_failsafe_counter}/{max_loops}] Executing SEO Semantic Audit...")
-            seo_approved = review_page_seo(page_content)
+            prompt = self.prompt_manager.get_humanizer_prompt(generated_blocks)
+            self._log_prompt("4_Humanizer_All_Blocks", prompt)
             
-            page_content.refresh_from_db()
-
-        # اگر در لوپ رایتر خطای مهلک رخ داد، کلاً متوقف شود
-        if writer_aborted:
-            page_content.generation_error = "توقف خط تولید: خطای غیرقابل بازیابی در مرحله نگارش (Writer)"
-            page_content.save()
-            results.append((brief.keyword.text, "ناموفق در چرخه نگارش"))
-            continue
-
-        # --------------------------------------------------------
-        # مرحله ۳: پس‌پردازش و غنی‌سازی نهایی
-        # --------------------------------------------------------
-        page_content.refresh_from_db()
-        
-        if seo_approved or page_content.iterations >= max_loops or local_failsafe_counter >= max_loops:
+            human_out: HumanizerOutput = self.humanizer_llm.invoke(prompt.to_messages())
             
-            # ثبت وضعیت نهایی و دلیل توقف در دیتابیس
-            if not seo_approved:
-                print(f"[!] Circuit Breaker: SEO hit max iterations ({max_loops}). Forcing compilation step...")
-                page_content.generation_error = f"پایان اجباری: اتمام سقف {max_loops} بار اصلاح. نمره سئو نهایی: {page_content.seo_score}"
-            else:
-                page_content.generation_error = f"پایان موفق: سئو با نمره {page_content.seo_score} تایید شد."
+            humanized_map = {b.block_id: b.humanized_content for b in human_out.blocks}
+            
+            for block in generated_blocks:
+                b_id = block.get("block_id")
+                if b_id in humanized_map:
+                    block["content"] = humanized_map[b_id]
+                
+            self.content_obj.blocks_json = generated_blocks
+            self.content_obj.save()
 
-            print(f"[*] Extracting FAQ data directly from generated blocks...")
+            # ---------------------------------------------------------
+            # 5. LINK BUILDER & FINAL JSON MAPPING
+            # ---------------------------------------------------------
+            print(f"[{self.content_obj.id}] Running Link Builder Agent...")
             
-            blocks = page_content.blocks_json or []
+            final_html_parts = []
+            faq_data = []
             
-            for b in blocks:
-                if b.get("block_type") == "faq":
-                    raw_faq_output = b.get("content", "").strip()
+            for block in self.content_obj.blocks_json:
+                b_type = block.get("block_type")
+                b_content = block.get("content")
+                b_id = block.get("block_id", 0)
+                
+                if b_type == "faq":
                     try:
-                        clean_json = raw_faq_output.strip()
-                        if clean_json.startswith("```json"):
-                            clean_json = clean_json[7:]
-                        elif clean_json.startswith("```"):
-                            clean_json = clean_json[3:]
-                        if clean_json.endswith("```"):
-                            clean_json = clean_json[:-3]
-                        clean_json = clean_json.strip()
+                        parsed_faq = json.loads(b_content)
+                        faq_data.extend(parsed_faq)
+                    except json.JSONDecodeError:
+                        pass
+                
+                # بلوک‌ها را داخل یک div با id مشخص قرار می‌دهیم تا پس از لینک‌سازی بتوانیم تفکیکشان کنیم
+                final_html_parts.append(f'<div id="block-{b_id}">\n{b_content}\n</div>')
 
-                        # فیلتر جادویی Regex برای حل مشکل HTML در JSON
-                        clean_json = re.sub(r'([a-zA-Z0-9-]+)="([^"]*)"', r"\1='\2'", clean_json)
-
-                        faq_data = json.loads(clean_json)
-                        page_content.faq_json = faq_data
-
-                    except json.JSONDecodeError as e:
-                        print(f"[-] Critical JSON Parse Error in FAQ: {e}")
-                        page_content.faq_json = []
-
-            # ساخت اسکیمای سئو (JSON-LD)
-            generated_schemas = generate_advanced_schema(brief, page_content)
-            page_content.schema_json = generated_schemas
+            self.content_obj.faq_json = faq_data
+            full_html = "\n".join(final_html_parts)
             
-            # ذخیره تمامی آپدیت‌ها در دیتابیس
-            page_content.generation_status = PageContent.GenerationStatus.COMPLETED
-            page_content.generated_at = timezone.now()
-            page_content.generated_by = "Gemini Self-Correction Pipeline"
-            page_content.save()
+            prompt = self.prompt_manager.get_link_builder_prompt(full_html)
+            self._log_prompt("5_Link_Builder", prompt)
             
-            final_status = "تکمیل شد" if seo_approved else f"تکمیل شد (سقف اصلاح - نمره {page_content.seo_score})"
-            results.append((brief.keyword.text, final_status))
+            link_out: LinkBuilderOutput = self.link_llm.invoke(prompt.to_messages())
+            linked_full_html = link_out.linked_html
             
-    return results
+            # استخراج مجدد بلوک‌های لینک‌دار شده و آپدیت blocks_json
+            for block in self.content_obj.blocks_json:
+                b_id = block.get("block_id")
+                
+                # پیدا کردن محتوای تغییریافته هر بلوک بوسیله Regex
+                pattern = re.compile(rf'<div id="block-{b_id}">\s*(.*?)\s*</div>', re.DOTALL)
+                match = pattern.search(linked_full_html)
+                
+                if match:
+                    block["content"] = match.group(1).strip()
+            
+            # ⚠️ اعمال قانون مهم: خالی گذاشتن کامل فیلد compiled_body
+            self.content_obj.compiled_body = "" 
+
+            print(f"[{self.content_obj.id}] schema generating...")
+            schemas_list = generate_advanced_schema(self.brief, self.content_obj)
+            self.content_obj.schema_json = json.dumps(schemas_list, ensure_ascii=False)
+            self.content_obj.generation_status = PageContent.GenerationStatus.COMPLETED
+            self.content_obj.generated_at = timezone.now()
+            self.content_obj.generated_by = "Multi-Agent System (Gemini 1.5)"
+            self.content_obj.save()
+
+            print(f"[{self.content_obj.id}] GENERATION COMPLETED SUCCESSFULLY! Output saved in blocks_json.")
+            return True
+
+        except Exception as e:
+            error_trace = traceback.format_exc()
+            print(f"Orchestrator Error on Page {self.content_obj.id}:\n{error_trace}")
+            self._log_error("Orchestrator_Run", error_trace)
+            return False
+        

@@ -23,12 +23,12 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-68&)#k#qmz_)1i&z1=&u9nr*=_a0_fzp!-&+-6t3k3c769hwo3'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.78.180.173', 'localhost']
 
 
 # Application definition
@@ -62,10 +62,11 @@ ROOT_URLCONF = 'seoengine.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -73,6 +74,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'seoengine.wsgi.application'
 
@@ -83,7 +85,7 @@ WSGI_APPLICATION = 'seoengine.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'cyclet_remote.db.sqlite3',
     }
 }
 
@@ -122,9 +124,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-MEDIA_ROOT = 'media/'
-# Default primary key field type
+STATIC_URL = '/assets/'
+
+# مسیری که جنگو باید فایل‌های استاتیک را از آنجا بخواند
+STATICFILES_DIRS = [
+    BASE_DIR / 'assets',
+]
+MEDIA_URL = '/media/'
+
+# پوشه‌ای که فایل‌ها واقعاً در آن ذخیره می‌شوند
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

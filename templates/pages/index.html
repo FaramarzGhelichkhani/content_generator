@@ -1,0 +1,340 @@
+<div class="flex flex-col w-full rtl bg-background font-body-md text-on-background relative overflow-hidden">
+            
+    <!-- ================= 1. HERO SECTION ================= -->
+    <section class="relative w-full min-h-[90vh] flex flex-col justify-center -mt-20 pt-32 pb-32 md:pb-40 overflow-hidden">
+        <div id="hero-bg" class="absolute inset-0 bg-cover bg-center transition-transform duration-[50ms] ease-out" style="background-image: url('/assets/img/hero-bg.jpg'); transform: scale(1.05);"></div>
+        <div class="absolute inset-0 bg-gradient-to-l from-surface-variant/95 via-surface-variant/80 to-surface-variant/40 mix-blend-multiply"></div>
+        
+        <div class="relative z-10 w-full max-w-[1280px] mx-auto px-4 sm:px-6 md:px-8 flex items-center justify-start h-full">
+            <div class="max-w-2xl text-right flex flex-col items-start gap-6">
+                
+                <h1 class="font-headline-xl text-4xl md:text-5xl lg:text-6xl text-white font-black leading-tight drop-shadow-xl">
+                     ساخت، کپی و فروش
+                    ریموت انواع موتور سیکلت
+                </h1>
+                
+                <div class="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-md text-white px-4 py-2 rounded-full shadow-lg border border-primary/30 mt-8">
+                    <svg class="text-[18px] text-primary w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M23 11.99l-2.44-2.79.34-3.69-3.61-.82-1.89-3.2L12 2.96 8.6 1.5 6.71 4.69 3.1 5.5l.34 3.7L1 11.99l2.44 2.79-.34 3.7 3.61.82L8.6 22.5l3.4-1.47 3.4 1.46 1.89-3.19 3.61-.82-.34-3.69L23 11.99zm-13 5l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                    <span class="font-label-md font-bold">خدمات تخصصی ریموت و کیلس</span>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4 mt-4 w-full sm:w-auto">
+                    <a href="#consultation-form" class="group relative flex items-center justify-center gap-2 bg-primary text-white px-8 py-4 rounded-xl font-bold text-lg shadow-[0_4px_15px_rgba(0,105,112,0.3)] hover:shadow-[0_8px_25px_rgba(0,105,112,0.5)] hover:-translate-y-1 transition-all duration-300 overflow-hidden w-full sm:w-auto">
+                        <div class="absolute inset-0 w-full h-full bg-white/30 translate-x-[-150%] skew-x-[-15deg] group-hover:animate-shine"></div>
+                        <span>درخواست آنلاین خدمات</span>
+                        <svg class="transition-transform group-hover:-translate-x-1 rtl:rotate-180 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                    </a>
+                    
+                    <a href="tel:09204407640" class="flex items-center justify-center gap-2 bg-transparent text-white border-2 border-white/50 px-8 py-4 rounded-xl font-bold text-lg hover:border-white hover:bg-white/10 hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto backdrop-blur-sm">
+                        <svg class="w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+                        <span>تماس با کارشناس</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 2. SERVICES SECTION (داینامیک) ================= -->
+    <section class="w-full max-w-[1280px] mx-auto px-4 sm:px-6 md:px-8 -mt-20 md:-mt-24 relative z-20 mb-20 md:mb-32">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            
+            {% for service in all_services|slice:":4" %}
+            {% if service.slug != 'shop' %}
+            <a href="/services/{{ service.slug }}" class="bg-surface-container-lowest rounded-2xl p-6 md:p-8 shadow-xl border border-outline-variant/30 hover:shadow-2xl hover:border-primary/50 hover:-translate-y-2 transition-all duration-300 group flex flex-col items-center text-center">
+                <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 group-hover:bg-primary transition-all duration-300">
+                    <svg class="text-primary group-hover:text-white text-[32px] md:text-[40px] transition-colors w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+                </div>
+                <h3 class="font-headline-md text-lg md:text-xl text-on-surface font-black mb-2 group-hover:text-primary transition-colors">{{ service.name }}</h3>
+                <p class="font-body-md text-on-surface-variant leading-relaxed">{{ service.meta.short_desc|default:'خدمات تخصصی و حرفه‌ای' }}</p>
+            </a>
+            {% elif service.slug == 'shop' %}
+            <a href="/{{ service.slug }}" class="bg-surface-container-lowest rounded-2xl p-6 md:p-8 shadow-xl border border-outline-variant/30 hover:shadow-2xl hover:border-primary/50 hover:-translate-y-2 transition-all duration-300 group flex flex-col items-center text-center">
+                <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 group-hover:bg-primary transition-all duration-300">
+                    <svg class="text-primary group-hover:text-white text-[32px] md:text-[40px] transition-colors w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+                </div>
+                <h3 class="font-headline-md text-lg md:text-xl text-on-surface font-black mb-2 group-hover:text-primary transition-colors">{{ service.name }}</h3>
+                <p class="font-body-md text-on-surface-variant leading-relaxed">{{ service.meta.short_desc|default:'خدمات تخصصی و حرفه‌ای' }}</p>
+            </a>
+            {% endif %}
+            {% empty %}
+                <!-- بکاپ در صورت خالی بودن دیتابیس سرویس‌ها -->
+                <a href="/services/create-remote" class="bg-surface-container-lowest rounded-2xl p-6 md:p-8 shadow-xl border border-outline-variant/30 hover:shadow-2xl hover:border-primary/50 hover:-translate-y-2 transition-all duration-300 group flex flex-col items-center text-center">
+                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 group-hover:bg-primary transition-all duration-300">
+                        <svg class="text-primary group-hover:text-white text-[32px] md:text-[40px] transition-colors w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                    </div>
+                    <h3 class="font-headline-md text-lg md:text-xl text-on-surface font-black mb-2 group-hover:text-primary transition-colors">ساخت ریموت یدک</h3>
+                    <p class="font-body-md text-on-surface-variant leading-relaxed">ساخت سریع و دقیق ریموت یدک برای انواع موتورهای هوشمند.</p>
+                </a>
+            {% endfor %}
+            
+        </div>
+    </section>
+
+    <!-- ================= 3. BRANDS SECTION (با دکمه مشاهده بیشتر) ================= -->
+    {% if featured_brands %}
+    <section class="w-full py-20 md:py-32 bg-surface-container-low relative overflow-hidden">
+        <div class="absolute -right-64 -top-64 w-[600px] h-[600px] md:w-[800px] md:h-[800px] bg-primary/10 rounded-full blur-[100px] md:blur-[120px] pointer-events-none"></div>
+        
+        <div class="w-full max-w-[1280px] mx-auto px-4 sm:px-6 md:px-8 relative z-10 flex flex-col gap-10 md:gap-12">
+            <div class="flex flex-col items-center justify-center text-center">
+                <h2 class="font-headline-xl text-3xl md:text-4xl text-on-surface font-black mb-2">برندهای تحت پوشش</h2>
+                <p class="font-body-lg text-on-surface-variant">خدمات تخصصی برای برترین برندهای موتورسیکلت در ایران</p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                {% for brand in featured_brands %}
+                    {% with poster=brand.get_poster_image %}
+                    <!-- منطق نمایش هوشمند: ۴ تا در موبایل، ۸ تا در دسکتاپ -->
+                    <a href="/{{ brand.slug }}" class="brand-card relative overflow-hidden bg-surface-container-lowest rounded-2xl aspect-[4/3] shadow-md border border-outline-variant/30 hover:border-primary/50 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 cursor-pointer group flex flex-col justify-end
+                        {% if forloop.counter > 4 and forloop.counter <= 8 %} hidden md:flex {% elif forloop.counter > 8 %} hidden {% else %} flex {% endif %}">
+                        
+                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" 
+                             style="background-image: url('{% if poster %}{% if poster.wp_image_url %}{{ poster.wp_image_url }}{% elif poster.image %}{{ poster.image.url }}{% endif %}{% else %}/assets/img/default-brand.jpg{% endif %}');">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-surface-variant/90 via-surface-variant/40 to-transparent transition-opacity duration-300 group-hover:opacity-90"></div>
+                        <div class="relative z-10 p-4 md:p-5 flex items-center justify-between w-full">
+                            <span class="font-headline-md text-base md:text-xl text-white font-black group-hover:text-primary transition-colors line-clamp-1">{{ brand.name }}</span>
+                            <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-primary transition-colors">
+                                <svg class="text-white text-[16px] rtl:rotate-180 w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                            </div>
+                        </div>
+                    </a>
+                    {% endwith %}
+                {% endfor %}
+            </div>
+
+            <!-- دکمه مشاهده بیشتر (با جاوااسکریپت کنترل می‌شود) -->
+            <div id="show-more-brands-container" class="hidden w-full flex justify-center mt-2">
+                <button id="show-more-brands-btn" class="flex items-center gap-2 bg-surface-container-lowest hover:bg-primary/10 text-primary font-bold px-8 py-3 rounded-xl transition-colors border border-outline-variant/50 hover:border-primary/50 shadow-sm">
+                    مشاهده بیشتر 
+                    <svg class="w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                </button>
+            </div>
+            
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- ================= 4. ABOUT / WHY US SECTION ================= -->
+    <section id="about-us" class="w-full py-20 md:py-32 bg-surface">
+        <div class="w-full max-w-[1280px] mx-auto px-4 sm:px-6 md:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24 items-center">
+                
+                <!-- تصویر تکنسین -->
+                <div class="relative order-2 lg:order-1 px-8 md:px-0">
+                    <div class="absolute -inset-4 md:-inset-6 bg-primary/10 rounded-[32px] md:rounded-[40px] transform rotate-3"></div>
+                    <!-- افزودن width و height برای جلوگیری از پرش صفحه (CLS) -->
+                    <img class="relative rounded-[24px] md:rounded-[32px] shadow-2xl w-full object-cover aspect-square md:aspect-[4/5] z-10" src="/assets/img/tech.jpg" alt="تکنسین متخصص ساخت ریموت موتور سیکلت" width="600" height="750">
+                    
+                    <div class="absolute -bottom-6 -left-6 md:-bottom-10 md:-left-10 z-20 bg-surface-container-lowest p-4 md:p-6 rounded-2xl shadow-xl border border-outline-variant/30 flex items-center gap-4 animate-bounce" style="animation-duration: 3s;">
+                        <div class="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                            <svg class="text-[28px] md:text-[36px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42A8.962 8.962 0 0012 4c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-headline-md font-black text-lg md:text-xl text-on-surface">سریع‌ترین زمان</span>
+                            <span class="font-body-sm text-sm text-on-surface-variant">حضور فوری در محل</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- متن درباره ما (بهینه‌شده برای سئو) -->
+                <div class="flex flex-col gap-6 md:gap-8 order-1 lg:order-2 text-center lg:text-right">
+                    <div class="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full self-center lg:self-start">
+                        <svg class="text-[18px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M9.68 13.69L12 11.93l2.31 1.76-.88-2.85L15.75 9h-2.84L12 6.19 11.09 9H8.25l2.31 1.84-.88 2.85zM20 10c0-4.42-3.58-8-8-8s-8 3.58-8 8c0 2.03.74 3.89 1.98 5.33L4 22l8-3 8 3-1.97-6.67C19.26 13.89 20 12.03 20 10zm-8 7l-5.66 2.12.98-3.32A7.945 7.945 0 014 10c0-4.41 3.59-8 8-8s8 3.59 8 8c0 2.22-.9 4.23-2.33 5.8l.99 3.32L12 17z"/></svg>
+                        <h2 class="font-label-md font-bold m-0 p-0 text-[14px]">درباره مجموعه ریموت سیکلت</h2>
+                    </div>
+                    
+                    <h3 class="font-headline-xl text-3xl md:text-4xl lg:text-5xl text-on-surface font-black leading-tight">
+                        مرکز تخصصی ریموت ، سوییچ و کیلس  <br>
+                        <span class="text-primary mt-2 inline-block">موتورسیکلت‌های مدرن</span>
+                    </h3>
+                    
+                    <p class="font-body-lg text-lg text-on-surface-variant leading-loose">
+                        تیم تخصصی <strong>ریموت سیکلت</strong> با بهره‌گیری از دانش روز دنیا و تجهیزات دیاگ اورجینال، جامع‌ترین خدمات سیستم‌های ایموبلایزر را ارائه می‌دهد. از <strong>ساخت ریموت</strong> گم‌شده و <strong>کپی ریموت یدک</strong> گرفته تا <strong>تعمیر کیلس</strong> آسیب‌دیده، تمامی فرآیندها در سریع‌ترین زمان ممکن انجام می‌شود.
+                    </p>
+                    
+                    <p class="font-body-md text-base text-on-surface-variant leading-loose mt-[-10px]">
+                        ما خدمات <strong>فروش ریموت</strong> فابریک و برنامه‌ریزی SCU را برای محبوب‌ترین برندهای بازار از جمله <strong>هوندا کلیک و ADV، یاماها آیروکس و NMAX، وسپا، بنلی و SYM</strong> به صورت کاملاً نرم‌افزاری و بدون نیاز به باز کردن قطعات یا آسیب به سیم‌کشی موتور ارائه می‌دهیم. امنیت وسیله نقلیه شما خط قرمز ماست.
+                    </p>
+                    
+                    <ul class="flex flex-col gap-4 mt-2">
+                        <li class="flex items-center gap-3">
+                            <svg class="text-primary bg-primary/10 rounded-full p-1 w-[24px] h-[24px] box-content" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <h4 class="font-body-md font-bold text-on-surface text-right m-0 p-0 text-[16px]">کددهی اصولی بدون باطل شدن گارانتی موتور</h4>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <svg class="text-primary bg-primary/10 rounded-full p-1 w-[24px] h-[24px] box-content" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <h4 class="font-body-md font-bold text-on-surface text-right m-0 p-0 text-[16px]">استفاده از بردهای الکترونیکی فابریک و اورجینال</h4>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <svg class="text-primary bg-primary/10 rounded-full p-1 w-[24px] h-[24px] box-content" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <h4 class="font-body-md font-bold text-on-surface text-right m-0 p-0 text-[16px]">ضمانت کتبی عملکرد و قیمت‌گذاری شفاف</h4>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 5. FORM SECTION ================= -->
+    <section id="consultation-form" class="w-full py-20 md:py-32 bg-surface-variant text-on-surface relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#006970_1px,transparent_1px)] [background-size:20px_20px]"></div>
+
+        <div class="w-full max-w-[1280px] mx-auto px-4 sm:px-6 md:px-8 relative z-10 flex flex-col items-center text-center">
+            <h2 class="font-headline-xl text-3xl md:text-5xl font-black mb-4">نیاز به مشاوره دارید؟</h2>
+            <p class="font-body-lg text-on-surface-variant mb-10 max-w-2xl">شماره خود را بگذارید تا کارشناسان ما در کمتر از ۱۵ دقیقه با شما تماس بگیرند و راهنمایی‌های لازم را ارائه دهند.</p>
+
+            <form id="bale-contact-form" class="w-full max-w-3xl bg-surface-container-lowest p-6 md:p-10 rounded-3xl shadow-2xl flex flex-col gap-6 md:gap-8 text-right border border-outline-variant/50 relative overflow-hidden">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex flex-col gap-2">
+                        <label class="font-label-md font-bold text-on-surface">شهر / محله</label>
+                        <input name="city" required class="bg-surface-container/50 text-on-surface p-4 rounded-xl outline-none border border-outline-variant/50 focus:border-primary focus:bg-surface-container-lowest transition-all font-body-md" placeholder="مثال: تهران - تهرانپارس" type="text">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="font-label-md font-bold text-on-surface">شماره تماس <span class="text-error">*</span></label>
+                        <input name="phone" required class="bg-surface-container/50 text-on-surface p-4 rounded-xl outline-none border border-outline-variant/50 focus:border-primary focus:bg-surface-container-lowest transition-all font-body-md text-right" dir="ltr" placeholder="۰۹۱۲ ۳۴۵ ۶۷۸۹" type="tel">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex flex-col gap-2">
+                        <label class="font-label-md font-bold text-on-surface">برند موتور سیکلت <span class="text-error">*</span></label>
+                        <div class="relative">
+                            <select name="motor_brand" required class="w-full bg-surface-container/50 text-on-surface p-4 rounded-xl outline-none border border-outline-variant/50 focus:border-primary focus:bg-surface-container-lowest transition-all font-body-md appearance-none cursor-pointer">
+                                <option disabled selected value="">انتخاب کنید...</option>
+                                {% for brand in featured_brands %}
+                                    <option value="{{ brand.name }}">{{ brand.name }}</option>
+                                {% endfor %}
+                                <option value="سایر">سایر مدل‌ها</option>
+                            </select>
+                            <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none w-[1.5em] h-[1.5em]" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="font-label-md font-bold text-on-surface">توضیحات (اختیاری)</label>
+                        <input name="desc" class="bg-surface-container/50 text-on-surface p-4 rounded-xl outline-none border border-outline-variant/50 focus:border-primary focus:bg-surface-container-lowest transition-all font-body-md" placeholder="توضیح کوتاه مشکل..." type="text">
+                    </div>
+                </div>
+
+                <!-- باکس نمایش پیام موفقیت یا خطا -->
+                <div id="form-message" class="hidden rounded-xl p-4 text-center font-bold text-lg"></div>
+
+                <button type="submit" id="submit-btn" class="mt-2 w-full bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary/90 hover:-translate-y-1 transition-all shadow-[0_4px_15px_rgba(0,105,112,0.2)] flex items-center justify-center gap-2">
+                    <span>ثبت درخواست مشاوره</span>
+                    <svg class="text-[20px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                </button>
+            </form>
+        </div>
+    </section>
+
+</div>
+
+<!-- ====== استایل‌های اختصاصی و انیمیشن‌ها ====== -->
+<style>
+    @keyframes shine {
+        0% { transform: translateX(-150%) skewX(-15deg); }
+        100% { transform: translateX(150%) skewX(-15deg); }
+    }
+    .animate-shine {
+        animation: shine 1.2s ease-in-out infinite;
+    }
+</style>
+
+<!-- ====== اسکریپت‌های داینامیک صفحه اصلی ====== -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // ۱. افکت پارالاکس (اسکرول) پس‌زمینه هیرو
+        const heroBg = document.getElementById('hero-bg');
+        if(heroBg) {
+            window.addEventListener('scroll', () => {
+                if(window.scrollY < window.innerHeight) {
+                    const scrollVal = window.scrollY;
+                    heroBg.style.transform = `scale(${1.05 + scrollVal * 0.0002}) translateY(${scrollVal * 0.15}px)`;
+                }
+            });
+        }
+
+        // ۲. منطق دکمه "مشاهده بیشتر" برندها
+        const showMoreContainer = document.getElementById('show-more-brands-container');
+        const showMoreBtn = document.getElementById('show-more-brands-btn');
+        const brandCards = document.querySelectorAll('.brand-card');
+
+        if (showMoreContainer && showMoreBtn && brandCards.length > 0) {
+            const checkHiddenBrands = () => {
+                let hasHidden = false;
+                brandCards.forEach(card => {
+                    if (window.getComputedStyle(card).display === 'none') {
+                        hasHidden = true;
+                    }
+                });
+                
+                if (hasHidden) {
+                    showMoreContainer.classList.remove('hidden');
+                } else {
+                    showMoreContainer.classList.add('hidden');
+                }
+            };
+
+            checkHiddenBrands();
+            window.addEventListener('resize', checkHiddenBrands);
+
+            showMoreBtn.addEventListener('click', () => {
+                brandCards.forEach(card => {
+                    card.classList.remove('hidden', 'md:flex');
+                    card.classList.add('flex');
+                });
+                showMoreContainer.classList.add('hidden');
+            });
+        }
+
+        // ۳. هندل کردن ارسال فرم (AJAX)
+        const form = document.getElementById('bale-contact-form');
+        const msgDiv = document.getElementById('form-message');
+        const btn = document.getElementById('submit-btn');
+        const btnOriginalText = btn ? btn.innerHTML : '';
+
+        if(form && btn && msgDiv) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                // تغییر ظاهر دکمه به حالت در حال ارسال (با SVG جدید)
+                btn.disabled = true;
+                btn.classList.add('opacity-70', 'cursor-not-allowed');
+                btn.innerHTML = '<svg class="animate-spin text-[20px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg><span>در حال ارسال...</span>';
+                msgDiv.classList.add('hidden');
+
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch('/send-bale.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    msgDiv.classList.remove('hidden');
+
+                    if(response.ok && data.success) {
+                        msgDiv.className = 'rounded-xl p-4 text-center font-bold bg-[#d4edda] text-[#155724] mt-4 border border-[#c3e6cb]';
+                        msgDiv.textContent = data.message;
+                        form.reset();
+                    } else {
+                        msgDiv.className = 'rounded-xl p-4 text-center font-bold bg-[#f8d7da] text-[#721c24] mt-4 border border-[#f5c6cb]';
+                        msgDiv.textContent = data.message || 'خطا در ثبت درخواست.';
+                    }
+                } catch (error) {
+                    msgDiv.classList.remove('hidden');
+                    msgDiv.className = 'rounded-xl p-4 text-center font-bold bg-[#f8d7da] text-[#721c24] mt-4 border border-[#f5c6cb]';
+                    msgDiv.textContent = 'خطا در ارتباط با سرور. لطفاً به صورت تلفنی با ما تماس بگیرید.';
+                } finally {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                    btn.innerHTML = btnOriginalText;
+                }
+            });
+        }
+    });
+</script>

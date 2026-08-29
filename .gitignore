@@ -33,3 +33,13 @@ Thumbs.db
 
 # Log files
 *.log
+assets/
+assets/*
+output/
+output/*
+node_modules/*
+/logs/
+logs/*
+sync_state.json
+*lock.json
+package.json

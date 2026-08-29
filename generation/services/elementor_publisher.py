@@ -377,8 +377,8 @@ def publish_direct_elementor(page_content: PageContent):
     # --------------------------------------------------------
     # ۷. تزریق پکیج اسکیماها به انتهای صفحه
     # --------------------------------------------------------
-    # generated_schemas = generate_advanced_schema(brief, page_content)
-    generated_schemas = page_content.schema_json
+    generated_schemas = generate_advanced_schema(brief, page_content)
+    # generated_schemas = page_content.schema_json
     if generated_schemas:
         schema_html = ""
         for schema in generated_schemas:

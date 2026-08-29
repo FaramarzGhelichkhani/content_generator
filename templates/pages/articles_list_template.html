@@ -1,0 +1,190 @@
+<div class="flex flex-col w-full rtl bg-background">
+    
+    <!-- ================= 1. HEADER TITLE ================= -->
+    <section class="w-full px-4 md:px-8 py-10 md:py-16 mt-2 max-w-[1280px] mx-auto">
+        <!-- ================= BLOG HERO SECTION ================= -->
+       <div class="mb-8 flex flex-col gap-3">
+            <h1 class="font-headline-xl text-3xl md:text-4xl lg:text-5xl text-on-surface font-black">مقالات تخصصی و آموزشی</h1>
+            <p class="font-body-lg text-base md:text-lg text-on-surface-variant max-w-3xl leading-relaxed">
+                جدیدترین مقالات در زمینه تعمیرات، برنامه‌ریزی ریموت، عیب‌یابی سیستم‌های کیلس و ارتقاء امنیت موتورسیکلت‌های هوشمند.
+            </p>
+        </div>
+
+        <!-- ================= 2. FEATURED ARTICLE (مقاله ویژه - آخرین مقاله) ================= -->
+        {% if articles and articles|length > 0 %}
+        {% with featured=articles.0 %}
+        <article class="relative w-full h-[450px] md:h-[550px] rounded-[24px] md:rounded-[32px] overflow-hidden group cursor-pointer shadow-xl hover:shadow-2xl transition-shadow duration-300">
+            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
+                 style="background-image: url('{% if featured.entity.get_poster_image %}{{ featured.entity.get_poster_image.url }}{% elif featured.keyword.meta.image_url %}{{ featured.keyword.meta.image_url }}{% else %}/assets/img/blog-hero-bg.jpg{% endif %}');">
+            </div>
+            
+            <div class="absolute inset-0 bg-gradient-to-t from-on-surface/95 via-on-surface/50 to-transparent"></div>
+            
+            <a href="/{{ featured.slug }}" class="absolute inset-0 z-20"></a>
+
+            <div class="absolute bottom-0 left-0 w-full p-6 md:p-10 flex flex-col gap-4 z-10">
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="bg-primary/90 text-white px-4 py-1.5 rounded-full font-bold text-sm shadow-md">ویژه</span>
+                    
+                    {% if featured.reading_time %}
+                    <span class="font-label-md text-white text-sm text-surface-container-high flex items-center gap-1.5 bg-black/30 px-3 py-1.5 rounded-full backdrop-blur-md">
+                        <svg class="text-[18px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                        {{ featured.reading_time }} دقیقه مطالعه
+                    </span>
+                    {% endif %}
+                    
+                    <span class="font-label-md text-white text-sm text-surface-container-high flex items-center gap-1.5 bg-black/30 px-3 py-1.5 rounded-full backdrop-blur-md">
+                        <svg class="text-[18px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>
+                        {{ featured.created_at|date:"j F Y"|default:"۱۴۰۵-۰۶-۰۱" }}
+                    </span>
+                </div>
+                
+                <h2 class="font-headline-xl text-2xl md:text-3xl lg:text-4xl text-white font-black leading-tight drop-shadow-md group-hover:text-primary-container transition-colors">
+                    {{ featured.h1}}
+                </h2>
+                
+                <p class="font-body-lg text-sm md:text-base text-surface-container max-w-4xl line-clamp-2 md:line-clamp-3 leading-relaxed drop-shadow-sm">
+                    {{ featured.meta_description|default:featured.excerpt }}
+                </p>
+                
+                <div class="mt-2 flex items-center gap-2 text-primary-container font-bold group-hover:text-primary transition-colors">
+                    <span>مطالعه کامل مقاله</span>
+                    <svg class="transform rtl:rotate-180 group-hover:-translate-x-2 transition-transform w-[1.2em] h-[1.2em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                </div>
+            </div>
+        </article>
+        {% endwith %}
+        {% endif %}
+
+    </section>
+
+    <!-- ================= 3. CATEGORY FILTERS ================= -->
+    <section class="w-full px-4 md:px-8 max-w-[1280px] mx-auto pb-8 overflow-hidden">
+        <!-- اضافه کردن ماسک گرادیانت برای اسکرول زیباتر در موبایل -->
+        <div class="w-full overflow-x-auto no-scrollbar pb-4 relative mask-image-right">
+            <div class="flex items-center gap-3 w-max">
+                <a href="/blog" class="bg-primary text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-md hover:bg-primary/90 transition-colors">همه مقالات</a>
+                
+                <!-- این بخش می‌تواند با حلقه دسته‌بندی‌های شما داینامیک شود -->
+                {% for category in categories %}
+                <a href="?category={{ category }}" class="bg-surface-container text-on-surface-variant hover:bg-surface-variant hover:text-on-surface px-6 py-2.5 rounded-full font-bold text-sm transition-colors border border-outline-variant/30">
+                    {{ category }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 4. ARTICLES GRID ================= -->
+    <section class="w-full px-4 md:px-8 max-w-[1280px] mx-auto pb-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            
+            <!-- رد کردن مقاله اول (چون بالا نمایش داده شد) و نمایش مابقی -->
+            {% for article in articles %}
+            <article class="bg-surface-container-lowest border border-outline-variant/40 rounded-[24px] overflow-hidden flex flex-col group hover:shadow-xl hover:border-primary/30 transition-all duration-300 relative">
+                
+                <a href="/{{ article.slug }}" class="absolute inset-0 z-20"></a>
+                
+                <div class="h-56 relative overflow-hidden bg-surface">
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
+                         style="background-image: url('{% if article.entity.get_poster_image %}{{ article.entity.get_poster_image.url }}{% elif article.keyword.meta.image_url %}{{ article.keyword.meta.image_url }}{% else %}/assets/img/default-article.jpg{% endif %}');">
+                    </div>
+                    
+                    {% if article.category %}
+                    <div class="absolute top-4 right-4 bg-surface/90 backdrop-blur-md px-3 py-1 rounded-lg border border-white/20 shadow-sm z-10">
+                        <span class="font-bold text-xs text-primary">{{ article.category }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="p-6 flex flex-col flex-grow gap-3 relative z-10">
+                    <h3 class="font-headline-md text-lg md:text-xl font-black text-on-surface line-clamp-2 group-hover:text-primary transition-colors leading-snug">
+                        {{ article.h1 }}
+                    </h3>
+                    
+                    <p class="font-body-md text-sm text-on-surface-variant line-clamp-3 leading-loose flex-grow">
+                        {{ article.meta_description|default:article.excerpt }}
+                    </p>
+                    
+                    <div class="mt-4 pt-4 border-t border-outline-variant/30 flex items-center justify-between text-on-surface-variant">
+                        <div class="flex items-center gap-1.5 font-bold text-xs">
+                            <svg class="text-[18px] w-[1em] h-[1em]" viewBox="0 0 24 24" fill="currentColor"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>
+                            {{ article.created_at|date:"j M Y"|default:"۱۴۰۵-۰۶-۰۱" }}
+                        </div>
+                        
+                        <div class="flex items-center gap-1 font-bold text-xs group-hover:text-primary transition-colors">
+                            <span>ادامه مطلب</span>
+                            <svg class="text-[16px] rtl:rotate-180 w-[1.2em] h-[1.2em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+            
+        </div>
+    </section>
+
+    <!-- ================= 5. LOAD MORE BUTTON ================= -->
+    {% if has_next_page %}
+    <div class="w-full flex justify-center pb-24">
+        <button id="load-more-btn" class="border-2 border-primary text-primary px-8 py-3 rounded-xl font-bold text-base hover:bg-primary hover:text-white transition-colors flex items-center gap-2 shadow-sm">
+            <svg id="loading-icon" class="animate-spin hidden w-[1.2em] h-[1.2em]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+            <span>بارگذاری مقالات بیشتر</span>
+        </button>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- ====== استایل‌های اختصاصی ====== -->
+<style>
+    /* مخفی کردن اسکرول‌بار در لیست دسته‌بندی‌ها */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+    
+    /* افکت محوشوندگی در لبه‌های اسکرول افقی دسته‌بندی */
+    .mask-image-right {
+        mask-image: linear-gradient(to left, transparent, black 5%, black 100%);
+        -webkit-mask-image: linear-gradient(to left, transparent, black 5%, black 100%);
+    }
+
+    /* اسپینر لودینگ */
+    .animate-spin {
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
+
+<!-- ====== اسکریپت لودینگ نمونه ====== -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        const loadingIcon = document.getElementById('loading-icon');
+        
+        if(loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function() {
+                loadingIcon.classList.remove('hidden');
+                
+                // اصلاح سلکتور برای پشتیبانی از SVG
+                loadMoreBtn.querySelector('span').innerText = 'در حال بارگذاری...';
+                loadMoreBtn.classList.add('opacity-80', 'cursor-wait');
+                
+                // در اینجا کد AJAX خود را برای گرفتن صفحه بعدی وارد کنید
+                // setTimeout فقط برای پیش‌نمایش است
+                setTimeout(() => {
+                    loadingIcon.classList.add('hidden');
+                    loadMoreBtn.querySelector('span').innerText = 'بارگذاری مقالات بیشتر';
+                    loadMoreBtn.classList.remove('opacity-80', 'cursor-wait');
+                }, 1500);
+            });
+        }
+    });
+</script>
