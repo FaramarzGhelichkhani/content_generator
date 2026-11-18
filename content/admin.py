@@ -458,6 +458,7 @@ class PageContentAdmin(admin.ModelAdmin):
 
         # اطمینان از وجود اسلش در ابتدای آدرس
         url = obj.page_brief.url_path
+        # url = f'{obj.page_brief.project.base_domain}{url}'
         if not url.startswith('/'):
             url = f'/{url}'
 
@@ -467,7 +468,7 @@ class PageContentAdmin(admin.ModelAdmin):
             )
 
         return format_html(
-            '<a href="{}" target="_blank" '
+            '<a href="https://remotecyclet.ir{}" target="_blank" '
             'style="background: #006970; color: white; padding: 5px 5px; '
             'border-radius: 4px; text-decoration: none; font-size: 8px; font-weight: bold;">'
             'مشاهده صفحه'

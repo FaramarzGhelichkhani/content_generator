@@ -29,7 +29,10 @@ class PageContentCompiler:
         if page_type == PageBrief.PageType.EDUCATIONAL:
             return "pages/educational.html"
         if page_type == PageBrief.PageType.CLUSTER and level == 4:
-            return "pages/cluster.html"
+            if brief.keyword.is_pillar == False and  brief.keyword.parent_keyword.text == 'ساخت ریموت':
+                return "pages/model_create_remote.html"
+            if brief.keyword.is_pillar == False and  brief.keyword.parent_keyword.text == "ریموت":
+                return "pages/model_shop_remote.html"
         if page_type == PageBrief.PageType.PILLAR:
             if level == 1:
                 return "pages/service.html"
