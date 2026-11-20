@@ -149,7 +149,7 @@ class PageContentAdmin(admin.ModelAdmin):
                     'generation_status', 'publish_status', 'seo_score', 'iterations')
     list_filter = ('generation_status', 'publish_status', 'page_brief__entity__kind', 'page_brief__page_level')
     search_fields = ('page_brief__entity__parent__name','page_brief__entity__name')
-    actions = ['run_ai_orchestrator', 'reset_to_pending', 'regenerate_hero_only' ,'reset_schema' ,'compile_content_to_html']
+    actions = ['run_ai_orchestrator', 'reset_to_pending', 'regenerate_hero_only' ,'reset_schema' ,'compile_content_to_html', 'content_to_html']
     
     # اضافه کردن فیلد پیش‌نمایش به فرم ادمین
     readonly_fields = ('html_preview', 'view_generated_page',)
@@ -335,6 +335,62 @@ class PageContentAdmin(admin.ModelAdmin):
                 level=messages.ERROR
             )
 
+    @admin.action(description="،  ارسال فایل از کد کامپال اماده  به سایت")
+    def content_to_html(self, request: HttpRequest, queryset: QuerySet) -> None:
+            
+            compiler = PageContentCompiler()
+            deployer = FTPDeployer() # نمونه‌سازی از کلاس آپلودر
+            
+            success_count = 0
+            failed_count = 0
+    
+            for page in queryset:
+                try:
+                    
+                    if page.compiled_body is not None:
+                        # ۲. تولید فایل استاتیک روی هارد لوکال (مسیر فایل برگردانده می‌شود)
+                        local_file_path = compiler.export_to_static_files(page)
+                        
+                        # ۳. استخراج مسیر پوشه روی سرور (مثل honda/click)
+                        remote_dir = page.page_brief.url_path.strip("/")
+                        
+                        # ۴. ارسال فایل به دایرکت‌ادمین عبر FTP
+                        is_uploaded = deployer.upload_file(local_file_path, remote_dir)
+                        
+                        if is_uploaded:
+                            # ۵. تغییر وضعیت به منتشر شده
+                            page.publish_status = PageContent.PublishStatus.PUBLISHED
+                            page.save(update_fields=['publish_status', 'updated_at'])
+                            success_count += 1
+                        else:
+                            # اگر آپلود فیل شد، وضعیت منتشر شده نمی‌گیرد
+                            logger.error("Failed to FTP upload PageContent ID %d", page.pk)
+                            failed_count += 1
+                    else:
+                        failed_count += 1
+    
+                except ValueError as ve:
+                    logger.error("Validation error for PageContent ID %d: %s", page.pk, ve)
+                    failed_count += 1
+                except Exception as e:
+                    logger.error("Critical error for PageContent ID %d: %s", page.pk, e)
+                    failed_count += 1
+    
+            if success_count > 0:
+                self.message_user(
+                    request,
+                    f"پروسه موفق: {success_count} صفحه رندر و با موفقیت روی سرور سایت آپلود شدند.",
+                    level=messages.SUCCESS
+                )
+                
+            if failed_count > 0:
+                self.message_user(
+                    request,
+                    f"عملیات برای {failed_count} صفحه با خطا مواجه شد. (مشکل در رندر یا خطای اتصال FTP)",
+                    level=messages.ERROR
+                )
+    
+    
     def html_preview(self, obj):
         # بررسی اینکه blocks_json وجود داشته باشد و خالی نباشد
         if obj.blocks_json and isinstance(obj.blocks_json, list) and len(obj.blocks_json) > 0:
